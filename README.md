@@ -23,8 +23,8 @@ Kisan Mitra AI is an AI-powered smart farming assistant designed to help farmers
 ## 🛠️ Tech Stack
 
 ### Frontend
-- HTML5
-- CSS3
+- HTML
+- CSS
 - JavaScript (ES6)
 
 ### Backend
@@ -41,4 +41,26 @@ Kisan Mitra AI is an AI-powered smart farming assistant designed to help farmers
 - Crop Disease Detection Model
 - Web Speech API
 
+### Key Modules
+- AI Chatbot
+- Weather Forecast
+- Soil Analyzer
+- Crop Disease Detection
+- Voice Assistant
+- User Authentication
+- User Profile
+- Settings & Language Management
+
+ ### Security
+- Password Hashing using bcrypt.js
+- JWT Authentication
+- Protected API Routes
+- Environment Variables for Sensitive Data
+
+### Author
+- Rahul Pardhi
+- GitHub: https://github.com/your-username⁠�
+
+### Support
+- If you like this project, please consider giving it a ⭐ Star on GitHub.
 
