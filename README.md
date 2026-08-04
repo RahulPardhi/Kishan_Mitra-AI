@@ -4,74 +4,74 @@ Kisan Mitra AI is an AI-powered smart farming assistant designed to help farmers
 
 #🚀 Features
 
-🔐 User Authentication (Register & Login)
-👤 User Profile Management
-🌦 Real-Time Weather Information
-🌱 Soil Analysis
-🌿 AI Crop Disease Detection
-🤖 AI Farming Chatbot
-🎙️ Voice Assistant
-🌐 Multilingual Support (English, Hindi & Marathi)
-🌙 Dark Mode
-📱 Fully Responsive UI
-⚡ Modern Dashboard Design
+#🔐 User Authentication (Register & Login)
+#👤 User Profile Management
+#🌦 Real-Time Weather Information
+#🌱 Soil Analysis
+#🌿 AI Crop Disease Detection
+#🤖 AI Farming Chatbot
+#🎙️ Voice Assistant
+#🌐 Multilingual Support (English, Hindi & Marathi)
+#🌙 Dark Mode
+#📱 Fully Responsive UI
+#⚡ Modern Dashboard Design
 
 #🛠️ Tech Stack
 Frontend
-
-HTML
-CSS
-JavaScript (ES6)
+#HTML
+#CSS
+#JavaScript (ES6)
 
 Backend
 
-Node.js
-Express.js
-MongoDB
-Mongoose
-JWT Authentication
-bcrypt.js
-AI & APIs
-Google Gemini API (AI Chatbot)
-Weather API
-Crop Disease Detection Model
-Web Speech API (Voice Assistant)
+#Node.js
+#Express.js
+#MongoDB
+#Mongoose
+#JWT Authentication
+#bcrypt.js
+#AI & APIs
+#Google Gemini API (AI Chatbot)
+#Weather API
+#Crop Disease Detection Model
+#Web Speech API (Voice Assistant)
 
 #✨ Key Modules
-AI Chatbot
-Weather Forecast
-Soil Analyzer
-Crop Disease Detection
-Voice Assistant
-User Authentication
-User Profile
-Settings & Language Management
+
+#AI Chatbot
+#Weather Forecast
+#Soil Analyzer
+#Crop Disease Detection
+#Voice Assistant
+#User Authentication
+#User Profile
+#Settings & Language Management
 
 #🔒 Security
-Password Hashing using bcrypt.js
-JWT Authentication
-Protected API Routes
-Environment Variables for Sensitive Data
+#Password Hashing using bcrypt.js
+#JWT Authentication
+#Protected API Routes
+#Environment Variables for Sensitive Data
 
 #📸 Screenshots
-Login Page
-Register Page
-Dashboard
-Weather Module
-Soil Analyzer
-Disease Detection
-AI Chatbot
-Voice Assistant
-Settings
-User Profile
-(Add screenshots here after uploading them.)
+-Login Page
+-Register Page
+-Dashboard
+-Weather Module
+-Soil Analyzer
+-Disease Detection
+-AI Chatbot
+-Voice Assistant
+-Settings
+-User Profile
+-(Add screenshots here after uploading them.)
 
 #👨‍💻 Author
-Rahul Pardhi
-GitHub: https://github.com/Rahul Pardhi
+#Rahul Pardhi
+#GitHub: https://github.com/Rahul Pardhi
 ⁠
 #⭐ Support
-If you like this project, please consider giving it a ⭐ Star on GitHub.
+#If you like this project, please consider giving it a ⭐ Star on GitHub.
 
 ## Project Structure
 
