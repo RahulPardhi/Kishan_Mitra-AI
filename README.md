@@ -59,7 +59,7 @@ Kisan Mitra AI is an AI-powered smart farming assistant designed to help farmers
 
 ### Author
 - Rahul Pardhi
-- GitHub: https://github.com/your-username⁠�
+- GitHub: https://github.com/Rahul Pardhi
 
 ### Support
 - If you like this project, please consider giving it a ⭐ Star on GitHub.
