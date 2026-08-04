@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment Variables & Secrets
+.env
+backend/.env
+*.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

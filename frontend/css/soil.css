@@ -1,0 +1,151 @@
+/* ==========================================================================
+   KISAN MITRA AI - SOIL ANALYZER SCREEN STYLES (soil.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+header a {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+header a:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+}
+
+header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Soil Form Card */
+.soil-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
+}
+
+.soil-card label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+
+.soil-card label:first-of-type {
+  margin-top: 0;
+}
+
+.soil-card input, .soil-card select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main);
+  background: var(--bg-input);
+  outline: none;
+  transition: var(--transition);
+}
+
+.soil-card input:focus, .soil-card select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+  background: var(--bg-surface);
+}
+
+/* Analyze Button */
+#analyzeSoil {
+  width: 100%;
+  margin-top: 22px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-accent);
+  transition: var(--transition);
+}
+
+#analyzeSoil:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}
+
+#analyzeSoil:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Soil Report Card */
+.result-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  border: 1.5px solid var(--secondary);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 24px;
+  animation: slideUp 0.3s ease;
+}
+
+.result-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 10px;
+}
+
+.result-card p {
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.result-card p strong {
+  color: var(--primary-dark);
+}
+
+body.dark .result-card p strong {
+  color: var(--secondary);
+}

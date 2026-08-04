@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisan Mitra AI - Your Smart Farming Assistant</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/splash.css">
+</head>
+
+<body>
+
+    <div class="background-circle circle1"></div>
+    <div class="background-circle circle2"></div>
+    <div class="background-circle circle3"></div>
+
+    <main class="container splash-container">
+
+        <!-- Logo -->
+        <div class="logo-wrapper">
+            <div class="logo-circle">
+                <div class="logo-icon">🌿</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">
+            Kisan Mitra <span>AI</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="subtitle" data-i18n="tagline">
+            Your Smart Farming Assistant
+        </p>
+        <p class="subtitle hindi">
+            आपका स्मार्ट कृषि सहायक
+        </p>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="chip">🌾 Crop Care</div>
+            <div class="chip">🤖 AI Powered</div>
+            <div class="chip">⛅ Weather</div>
+            <div class="chip">🎙️ Voice Assistant</div>
+        </div>
+
+        <!-- Button -->
+        <button id="startBtn" class="start-btn">
+            <span>Get Started</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <!-- Footer -->
+        <p class="footer-text">
+            Trusted by 2M+ farmers across India
+        </p>
+
+    </main>
+
+    <script src="js/translations.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/splash.js"></script>
+    <script>
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark");
+        }
+    </script>
+
+</body>
+
+</html>

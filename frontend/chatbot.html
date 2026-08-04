@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="aiChatAssistant">AI Chatbot | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Header -->
+        <header>
+            <a href="dashboard.html">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h2 data-key="aiChatAssistant">AI Chat Assistant</h2>
+        </header>
+
+        <!-- Chat Box -->
+        <div class="chat-box" id="chatBox">
+            <div class="bot-message screen-enter">
+                👋 Hello! I am <strong data-key="appName">Kisan Mitra AI</strong>.<br>
+                Ask me anything about your crops, fertilizers, or farming techniques.
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="userInput" data-key-placeholder="typeQuestion" placeholder="Type your question...">
+            <button id="sendBtn" title="Send Message">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span data-key="home">Home</span>
+            </a>
+
+            <a href="chatbot.html" class="nav-item active">
+                <i class="fa-solid fa-robot"></i>
+                <span data-key="aiChat">AI Chat</span>
+            </a>
+
+            <a href="soil.html" class="nav-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span data-key="soil">Soil</span>
+            </a>
+
+            <a href="weather.html" class="nav-item">
+                <i class="fa-solid fa-cloud-sun"></i>
+                <span data-key="weather">Weather</span>
+            </a>
+
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span data-key="settings">Settings</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/chatbot.js"></script>
+
+</body>
+
+</html>

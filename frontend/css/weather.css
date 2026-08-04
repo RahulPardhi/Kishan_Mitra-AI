@@ -1,0 +1,164 @@
+/* ==========================================================================
+   KISAN MITRA AI - WEATHER SCREEN STYLES (weather.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+header a {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+header a:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+}
+
+header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Weather Hero Card */
+.weather-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: var(--radius-lg);
+  padding: 30px 24px;
+  color: #FFFFFF;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-primary);
+  margin-bottom: 24px;
+}
+
+body.dark .weather-card {
+  background: linear-gradient(135deg, #1B261D, #253828);
+  border: 1px solid var(--border-light);
+}
+
+.weather-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.weather-card h1 {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -1px;
+}
+
+.weather-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  opacity: 0.95;
+}
+
+.weather-card p {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+}
+
+/* Weather Stat Grid */
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.detail-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.detail-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.detail-box i {
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.detail-box h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.detail-box p {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Weather Advice Card */
+.weather-tip {
+  background: rgba(46, 125, 50, 0.08);
+  border: 1.5px solid rgba(46, 125, 50, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.weather-tip h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather-tip p {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.5;
+}

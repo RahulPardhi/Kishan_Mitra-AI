@@ -1,0 +1,199 @@
+/* ==========================================================================
+   KISAN MITRA AI - CHATBOT SCREEN STYLES (chatbot.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+
+header a {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+header a:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+}
+
+header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Chat Box Window */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+  scroll-behavior: smooth;
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+/* Bot Message Bubble */
+.bot-message {
+  align-self: flex-start;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-radius: 18px 18px 18px 4px;
+  padding: 14px 18px;
+  max-width: 82%;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  animation: slideUp 0.25s ease;
+}
+
+body.dark .bot-message {
+  background: var(--bg-input);
+  border-color: var(--border-light);
+}
+
+/* User Message Bubble */
+.user-message {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  padding: 14px 18px;
+  max-width: 82%;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-primary);
+  animation: slideUp 0.25s ease;
+}
+
+/* Input Floating Control Bar */
+.input-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 6px 8px 6px 16px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 10px;
+}
+
+.input-area input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--text-main);
+  outline: none;
+  font-family: inherit;
+}
+
+.input-area input:focus {
+  box-shadow: none;
+}
+
+.input-area button {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-primary);
+  flex-shrink: 0;
+}
+
+.input-area button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+}
+
+/* Chat Message Actions (Listen / Stop Voice Buttons) */
+.msg-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+body.dark .msg-actions {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.msg-speak-btn, .msg-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(46, 125, 50, 0.2);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.msg-speak-btn:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.msg-stop-btn {
+  background: rgba(229, 57, 53, 0.1);
+  color: #E53935;
+  border-color: rgba(229, 57, 53, 0.2);
+}
+
+.msg-stop-btn:hover {
+  background: #E53935;
+  color: #FFFFFF;
+}

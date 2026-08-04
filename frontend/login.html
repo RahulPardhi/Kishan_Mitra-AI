@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="welcomeBack">Login | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Top Section -->
+        <div class="top-section screen-enter">
+            <div class="logo-circle">
+                🌾
+            </div>
+            <h1 data-key="welcomeBack">Welcome Back!</h1>
+            <p data-key="signInSubtitle">Sign in to your Kisan Mitra account</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-card screen-enter">
+
+            <!-- Email -->
+            <label data-key="emailAddress">Email Address</label>
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" data-key-placeholder="enterEmail" placeholder="Enter your email">
+            </div>
+
+            <!-- Password -->
+            <label data-key="password">Password</label>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input id="password" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
+                <i id="togglePassword" class="fa-solid fa-eye"></i>
+            </div>
+
+            <div class="forgot">
+                <a href="#" data-key="forgotPassword">Forgot Password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button class="login-btn" data-key="loginToAccount">
+                Login to Account
+            </button>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span data-key="or">OR</span>
+            </div>
+
+            <!-- Google Sign In -->
+            <button class="google-btn">
+                <i class="fa-brands fa-google"></i>
+                <span data-key="continueWithGoogle">Continue with Google</span>
+            </button>
+
+            <!-- Register Link -->
+            <p class="register">
+                <span data-key="dontHaveAccount">Don't have an account?</span>
+                <a href="register.html" data-key="register">Register</a>
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/login.js"></script>
+
+</body>
+
+</html>

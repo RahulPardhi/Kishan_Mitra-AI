@@ -1,0 +1,278 @@
+/* ==========================================================================
+   KISAN MITRA AI - DASHBOARD SCREEN STYLES (dashboard.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+/* Header styling */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+header h2 span {
+  color: var(--accent);
+}
+
+header p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.notification {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.notification:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+}
+
+.notification::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+}
+
+/* Welcome Card */
+.welcome-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::after {
+  content: '🌾';
+  position: absolute;
+  right: -10px;
+  bottom: -15px;
+  font-size: 90px;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.welcome-card h3 {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.welcome-card h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.welcome-card p {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* Weather Summary Card */
+.weather-card {
+  background: linear-gradient(135deg, #2E7D32, #1B5E20);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+body.dark .weather-card {
+  background: linear-gradient(135deg, #1B261D, #253828);
+  border: 1px solid var(--border-light);
+}
+
+.weather-card h3 {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+
+.weather-card h2 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.weather-card p {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.weather-card .weather-icon {
+  font-size: 48px;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+/* Feature Cards Grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.feature-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.feature-card .icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 14px;
+  transition: var(--transition);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-card:hover .icon {
+  transform: scale(1.1);
+}
+
+.feature-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.feature-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* Individual Feature Card Accent Colors */
+#diseaseCard { background: #FAFFFE; border-color: #E8F5E9; }
+#diseaseCard .icon { background: #E8F5E9; color: #2E7D32; }
+#diseaseCard:hover { border-color: #81C784; }
+
+#chatCard { background: #FAFCFF; border-color: #E3F2FD; }
+#chatCard .icon { background: #E3F2FD; color: #1976D2; }
+#chatCard:hover { border-color: #90CAF9; }
+
+#soilCard { background: #FFFFF8; border-color: #FFF8E1; }
+#soilCard .icon { background: #FFF8E1; color: #F57F17; }
+#soilCard:hover { border-color: #FFE082; }
+
+#weatherCard { background: #FCFAFF; border-color: #F3E5F5; }
+#weatherCard .icon { background: #F3E5F5; color: #7B1FA2; }
+#weatherCard:hover { border-color: #CE93D8; }
+
+#voiceCard { background: #FFFAFC; border-color: #FCE4EC; }
+#voiceCard .icon { background: #FCE4EC; color: #C62828; }
+#voiceCard:hover { border-color: #F48FB1; }
+
+#languageCard { background: #FAFFFF; border-color: #E0F2F1; }
+#languageCard .icon { background: #E0F2F1; color: #00695C; }
+#languageCard:hover { border-color: #80CBC4; }
+
+body.dark .feature-card {
+  background: var(--bg-surface) !important;
+  border-color: var(--border-light) !important;
+}
+
+/* Farming Tip Section */
+.tip-card {
+  background: rgba(255, 152, 0, 0.08);
+  border: 1.5px solid rgba(255, 152, 0, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.tip-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #FFF3E0;
+  color: var(--accent-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.tip-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.tip-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}

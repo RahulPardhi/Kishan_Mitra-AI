@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="profile">My Profile | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Header -->
+        <header>
+            <a href="setting.html">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h2 data-key="profile">My Profile</h2>
+        </header>
+
+        <!-- Profile Card Avatar -->
+        <div class="profile-card screen-enter">
+            <div class="profile-image">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" id="profilePhoto" alt="Profile Avatar">
+                <label for="photoInput" class="camera-btn" title="Change Avatar">
+                    <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" id="photoInput" accept="image/*" hidden>
+            </div>
+            <h2 id="userName">Rahul Pardhi</h2>
+            <p class="subtitle" data-key="subtitle">Kisan Mitra AI User</p>
+        </div>
+
+        <!-- Info Form Card -->
+        <div class="info-card screen-enter">
+
+            <div class="info">
+                <label data-key="emailAddress">Email</label>
+                <input type="email" id="email" value="rahul@example.com" readonly>
+            </div>
+
+            <div class="info">
+                <label data-key="mobileNumber">Mobile</label>
+                <input type="text" id="mobile" value="+91 9876543210" readonly>
+            </div>
+
+            <div class="info">
+                <label data-key="location">Location</label>
+                <input type="text" id="location" placeholder="Enter Location" data-key-placeholder="enterLocation" readonly>
+            </div>
+
+            <div class="info">
+                <label data-key="language">Language</label>
+                <select id="language" disabled>
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="mr">Marathi</option>
+                </select>
+            </div>
+
+            <button id="editBtn" data-key="edit">
+                <i class="fa-solid fa-pen"></i>
+                Edit Profile
+            </button>
+
+            <button id="saveBtn" style="display:none;" data-key="save">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Changes
+            </button>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span data-key="home">Home</span>
+            </a>
+
+            <a href="chatbot.html" class="nav-item">
+                <i class="fa-solid fa-robot"></i>
+                <span data-key="aiChat">AI Chat</span>
+            </a>
+
+            <a href="soil.html" class="nav-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span data-key="soil">Soil</span>
+            </a>
+
+            <a href="weather.html" class="nav-item">
+                <i class="fa-solid fa-cloud-sun"></i>
+                <span data-key="weather">Weather</span>
+            </a>
+
+            <a href="setting.html" class="nav-item active">
+                <i class="fa-solid fa-gear"></i>
+                <span data-key="settings">Settings</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/profile.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+/* ==========================================================================
+   KISAN MITRA AI - PROFILE SCREEN STYLES (profile.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+header a {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+header a:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+}
+
+header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Profile Card Avatar Header */
+.profile-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 28px 20px;
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px auto;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.camera-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.camera-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+.profile-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.profile-card .subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Profile Info Form Card */
+.info-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
+}
+
+.info {
+  margin-bottom: 16px;
+}
+
+.info label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.info input, .info select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main);
+  background: var(--bg-input);
+  outline: none;
+  transition: var(--transition);
+}
+
+.info input[readonly], .info select[disabled] {
+  opacity: 0.85;
+  background: var(--bg-page);
+  cursor: default;
+}
+
+.info input:not([readonly]):focus, .info select:not([disabled]):focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+  background: var(--bg-surface);
+}
+
+/* Edit & Save Action Buttons */
+#editBtn, #saveBtn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition);
+  border: none;
+}
+
+#editBtn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #FFFFFF;
+  box-shadow: var(--shadow-primary);
+}
+
+#editBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+}
+
+#saveBtn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #FFFFFF;
+  box-shadow: var(--shadow-accent);
+}
+
+#saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}

@@ -1,0 +1,159 @@
+// Apply Dark Mode on Page Load
+if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+}
+
+console.log("Dashboard Loaded Successfully 🚀");
+
+// ================================
+// Feature Cards Navigation
+// ================================
+
+const cards = {
+    diseaseCard: "disease.html",
+    chatCard: "chatbot.html",
+    soilCard: "soil.html",
+    weatherCard: "weather.html",
+    voiceCard: "voice.html",
+    languageCard: "setting.html",
+};
+
+Object.keys(cards).forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener("click", () => {
+            window.location.href = cards[id];
+        });
+    }
+});
+
+// ================================
+// Bottom Navigation Active Effect
+// ================================
+
+const navItems = document.querySelectorAll(".nav-item");
+navItems.forEach((item) => {
+    item.addEventListener("click", () => {
+        navItems.forEach((nav) => nav.classList.remove("active"));
+        item.classList.add("active");
+    });
+});
+
+// ================================
+// Notification Bell Animation & Click
+// ================================
+
+const bell = document.querySelector(".notification");
+if (bell) {
+    bell.addEventListener("mouseenter", () => {
+        bell.style.transform = "rotate(15deg)";
+    });
+    bell.addEventListener("mouseleave", () => {
+        bell.style.transform = "rotate(0deg)";
+    });
+    bell.addEventListener("click", () => {
+        alert("🔔 Notifications: All agricultural systems operating normally. Weather alerts and soil reports active!");
+    });
+}
+
+// Dynamic Greeting & User Name
+async function loadUserData() {
+    const nameHeading = document.getElementById("userNameHeading");
+    let name = localStorage.getItem("userName");
+
+    if (window.KisanAPI && window.KisanAPI.getToken()) {
+        try {
+            const res = await window.KisanAPI.request("/auth/profile");
+            if (res.success && res.user) {
+                window.KisanAPI.setUser(res.user);
+                name = res.user.name;
+            }
+        } catch (e) {
+            console.warn("Could not fetch profile, using cached user name.");
+        }
+    }
+
+    if (nameHeading && name) {
+        nameHeading.innerText = name;
+    }
+}
+
+// Live Weather Snippet Fetch
+async function loadLiveWeather() {
+    const weatherSection = document.querySelector(".weather-card");
+    if (!weatherSection) return;
+
+    const userLocation = localStorage.getItem("profileLocation") || "Nagpur";
+    try {
+        if (window.KisanAPI) {
+            const res = await window.KisanAPI.request(`/weather?city=${encodeURIComponent(userLocation)}`);
+            if (res.success && res.data) {
+                const w = res.data;
+                const tempEl = weatherSection.querySelector("h2");
+                const descEl = weatherSection.querySelector("p");
+                const iconEl = weatherSection.querySelector(".weather-icon");
+
+                if (tempEl) tempEl.innerText = w.temperature;
+                if (descEl) descEl.innerText = `${w.condition} (${w.city})`;
+                if (iconEl) {
+                    if (w.condition.toLowerCase().includes("rain")) iconEl.innerText = "🌧️";
+                    else if (w.condition.toLowerCase().includes("cloud")) iconEl.innerText = "⛅";
+                    else iconEl.innerText = "☀️";
+                }
+            }
+        }
+    } catch (err) {
+        console.warn("Using default weather snippet");
+    }
+}
+
+// Search bar functionality
+const searchInput = document.querySelector(".input-field");
+if (searchInput) {
+    searchInput.addEventListener("keyup", (e) => {
+        const val = e.target.value.toLowerCase().trim();
+
+        if (e.key === "Enter" && val) {
+            window.location.href = `chatbot.html?q=${encodeURIComponent(val)}`;
+            return;
+        }
+
+        const featureCards = document.querySelectorAll(".feature-card");
+        featureCards.forEach((card) => {
+            const text = card.innerText.toLowerCase();
+            if (text.includes(val) || val === "") {
+                card.style.display = "flex";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+}
+
+function updateGreeting() {
+    const hour = new Date().getHours();
+    const greeting = document.querySelector(".welcome-card h3");
+    if (!greeting) return;
+
+    let key = "goodMorning";
+    let icon = "🌞";
+    let fallback = "Good Morning";
+
+    if (hour >= 12 && hour < 17) {
+        key = "goodAfternoon";
+        icon = "☀️";
+        fallback = "Good Afternoon";
+    } else if (hour >= 17) {
+        key = "goodEvening";
+        icon = "🌙";
+        fallback = "Good Evening";
+    }
+
+    const translatedText = window.t ? window.t(key, fallback) : fallback;
+    greeting.innerHTML = `${icon} ${translatedText}`;
+}
+
+loadUserData();
+loadLiveWeather();
+updateGreeting();
+window.addEventListener("languageChanged", updateGreeting);

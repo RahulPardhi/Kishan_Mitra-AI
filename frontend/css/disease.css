@@ -1,0 +1,185 @@
+/* ==========================================================================
+   KISAN MITRA AI - DISEASE DETECTION SCREEN STYLES (disease.css)
+   ========================================================================== */
+
+@import url('style.css');
+
+/* Header styling */
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+header a {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+header a:hover {
+  background: var(--primary-light);
+  color: #FFFFFF;
+  border-color: var(--primary-light);
+  transform: translateX(-2px);
+}
+
+header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Upload Container Box */
+.upload-box {
+  background: #F5FDF6;
+  border: 2px dashed var(--secondary);
+  border-radius: var(--radius-lg);
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+  margin-bottom: 20px;
+}
+
+body.dark .upload-box {
+  background: rgba(46, 125, 50, 0.08);
+  border-color: var(--primary-light);
+}
+
+.upload-box:hover {
+  border-color: var(--primary);
+  background: #E8F5E9;
+  transform: translateY(-2px);
+}
+
+.upload-box i {
+  font-size: 44px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+
+.upload-box:hover i {
+  transform: scale(1.1);
+}
+
+.upload-box h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.upload-box p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.upload-box input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Image Preview Container */
+.preview {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.preview img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+
+/* Analyze Button */
+#analyzeBtn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-primary);
+  transition: var(--transition);
+  margin-bottom: 24px;
+}
+
+#analyzeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+}
+
+#analyzeBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Result Card */
+.result-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  border: 1.5px solid var(--secondary);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 24px;
+  animation: slideUp 0.3s ease;
+}
+
+.result-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 10px;
+}
+
+.result-card p {
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.result-card p strong {
+  color: var(--primary-dark);
+}
+
+body.dark .result-card p strong {
+  color: var(--secondary);
+}

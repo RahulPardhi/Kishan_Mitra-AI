@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="weather">Weather Forecast | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/weather.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Header -->
+        <header>
+            <a href="dashboard.html">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h2 data-key="weather">Weather Forecast</h2>
+        </header>
+
+        <!-- Weather Hero Card -->
+        <div class="weather-card screen-enter">
+            <div class="weather-icon">
+                <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+            <h1 id="temperature">30°C</h1>
+            <h3 id="city">Nagpur</h3>
+            <p id="condition" data-key="sunny">Partly Cloudy</p>
+        </div>
+
+        <!-- Weather Metric Details -->
+        <div class="details screen-enter">
+
+            <div class="detail-box">
+                <i class="fa-solid fa-droplet"></i>
+                <h4 data-key="humidity">Humidity</h4>
+                <p id="humidity">65%</p>
+            </div>
+
+            <div class="detail-box">
+                <i class="fa-solid fa-wind"></i>
+                <h4 data-key="wind">Wind</h4>
+                <p id="wind">12 km/h</p>
+            </div>
+
+            <div class="detail-box">
+                <i class="fa-solid fa-temperature-half"></i>
+                <h4 data-key="feelsLike">Feels Like</h4>
+                <p id="feels">32°C</p>
+            </div>
+
+            <div class="detail-box">
+                <i class="fa-solid fa-cloud-rain"></i>
+                <h4 data-key="rain">Rain</h4>
+                <p id="rain">20%</p>
+            </div>
+
+        </div>
+
+        <!-- Farming Advice Box -->
+        <div class="weather-tip screen-enter">
+            <h3 data-key="farmingAdvice">🌾 Farming Advice</h3>
+            <p id="advice">
+                Today's weather is suitable for irrigation and crop monitoring.
+            </p>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span data-key="home">Home</span>
+            </a>
+
+            <a href="chatbot.html" class="nav-item">
+                <i class="fa-solid fa-robot"></i>
+                <span data-key="aiChat">AI Chat</span>
+            </a>
+
+            <a href="soil.html" class="nav-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span data-key="soil">Soil</span>
+            </a>
+
+            <a href="weather.html" class="nav-item active">
+                <i class="fa-solid fa-cloud-sun"></i>
+                <span data-key="weather">Weather</span>
+            </a>
+
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span data-key="settings">Settings</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/weather.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="disease">Crop Disease Detection | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/disease.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Header -->
+        <header>
+            <a href="dashboard.html" class="header-back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h2 data-key="disease">Crop Disease Detection</h2>
+        </header>
+
+        <!-- Upload Box -->
+        <div class="upload-box screen-enter">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3 data-key="uploadImage">Upload Crop Image</h3>
+            <p data-key="uploadDesc">Select a clear image of the affected crop leaf.</p>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <!-- Image Preview -->
+        <div class="preview">
+            <img id="previewImage" alt="Crop preview">
+        </div>
+
+        <!-- Analyze Button -->
+        <button id="analyzeBtn" data-key="analyzeWithAI">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Analyze with AI
+        </button>
+
+        <!-- Analysis Result Card -->
+        <div class="result-card" id="resultCard">
+            <h3 data-key="analysisResult">🌿 Analysis Result</h3>
+            <p><strong>Disease:</strong> Leaf Blight</p>
+            <p><strong>Confidence:</strong> 98%</p>
+            <p><strong>Recommendation:</strong></p>
+            <p>Use Mancozeb fungicide spray and avoid overwatering soil.</p>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span data-key="home">Home</span>
+            </a>
+
+            <a href="chatbot.html" class="nav-item">
+                <i class="fa-solid fa-robot"></i>
+                <span data-key="aiChat">AI Chat</span>
+            </a>
+
+            <a href="soil.html" class="nav-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span data-key="soil">Soil</span>
+            </a>
+
+            <a href="weather.html" class="nav-item">
+                <i class="fa-solid fa-cloud-sun"></i>
+                <span data-key="weather">Weather</span>
+            </a>
+
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span data-key="settings">Settings</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/disease.js"></script>
+
+</body>
+
+</html>

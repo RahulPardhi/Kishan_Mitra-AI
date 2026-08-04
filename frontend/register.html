@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="register">Register | Kisan Mitra AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+    <div class="container app-container">
+
+        <!-- Top Section -->
+        <div class="top-section screen-enter">
+            <div class="logo-circle">
+                🌾
+            </div>
+            <h1 data-key="createAccount">Create Account</h1>
+            <p data-key="subtitle">Join Kisan Mitra AI to make farming smarter</p>
+        </div>
+
+        <!-- Register Card -->
+        <div class="login-card screen-enter">
+
+            <!-- Full Name -->
+            <label data-key="fullName">Full Name</label>
+            <div class="input-box">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="regName" data-key-placeholder="enterFullName" placeholder="Enter full name">
+            </div>
+
+            <!-- Email -->
+            <label data-key="emailAddress">Email Address</label>
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="regEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
+            </div>
+
+            <!-- Mobile -->
+            <label data-key="mobileNumber">Mobile Number</label>
+            <div class="input-box">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="regMobile" data-key-placeholder="enterMobile" placeholder="Enter mobile number">
+            </div>
+
+            <!-- Password -->
+            <label data-key="password">Password</label>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input id="regPassword" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
+            </div>
+
+            <!-- Register Button -->
+            <button class="login-btn" id="regBtn" data-key="register" style="margin-top: 18px;">
+                Register
+            </button>
+
+            <!-- Sign In Link -->
+            <p class="register" style="margin-top: 20px;">
+                <span data-key="alreadyHaveAccount">Already have an account?</span>
+                <a href="login.html" data-key="welcomeBack">Sign In</a>
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Dark Mode
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark");
+        }
+        document.getElementById("regBtn").addEventListener("click", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("regName").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const mobile = document.getElementById("regMobile") ? document.getElementById("regMobile").value.trim() : "";
+            const pass = document.getElementById("regPassword").value.trim();
+
+            if (!name || !email || !pass) {
+                alert("Please fill all required fields.");
+                return;
+            }
+
+            const regBtn = document.getElementById("regBtn");
+            regBtn.disabled = true;
+            regBtn.innerText = "Registering...";
+
+            try {
+                if (window.KisanAPI) {
+                    try {
+                        const res = await window.KisanAPI.request("/auth/register", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                name,
+                                email,
+                                mobile,
+                                password: pass,
+                                language: localStorage.getItem("language") || "en",
+                            }),
+                        });
+
+                        if (res && res.success) {
+                            window.KisanAPI.setToken(res.token);
+                            window.KisanAPI.setUser(res.user);
+                            alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
+                            window.location.href = "dashboard.html";
+                            return;
+                        }
+                        throw new Error(res?.message || "Registration failed. Please try again.");
+                    } catch (apiErr) {
+                        console.warn("Registration API attempt note:", apiErr.message);
+                        // If it's an explicit server error response (e.g. user already exists), inform user directly
+                        if (apiErr.message && !apiErr.message.toLowerCase().includes("failed to fetch") && !apiErr.message.toLowerCase().includes("networkerror")) {
+                            throw apiErr;
+                        }
+                    }
+                }
+
+                // Fallback for offline mode (if backend network call fails)
+                const localUser = {
+                    _id: "local_" + Date.now(),
+                    name: name,
+                    email: email,
+                    mobile: mobile || "+91 9876543210",
+                    location: "Nagpur",
+                    language: localStorage.getItem("language") || "en",
+                    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+                    notificationsEnabled: true
+                };
+                if (window.KisanAPI) {
+                    window.KisanAPI.setToken("offline_token_" + Date.now());
+                    window.KisanAPI.setUser(localUser);
+                } else {
+                    localStorage.setItem("profileEmail", email);
+                    localStorage.setItem("userName", name);
+                    if (mobile) localStorage.setItem("profileMobile", mobile);
+                }
+                alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
+                window.location.href = "dashboard.html";
+            } catch (err) {
+                alert(err.message || "Registration failed. Please try again.");
+            } finally {
+                regBtn.disabled = false;
+                regBtn.innerText = "Register";
+            }
+        });
+    </script>
+
+</body>
+
+</html>
