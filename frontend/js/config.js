@@ -1,5 +1,5 @@
 // Kisan Mitra AI - Central Frontend API Configuration
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://kishan-mitra-ai.onrender.com/api";
 const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
 
 const safeSetItem = (key, value) => {
