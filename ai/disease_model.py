@@ -103,9 +103,9 @@ DISEASE_KNOWLEDGE_BASE = {
 INVALID_IMAGE_RESPONSE = {
     "isPlant": False,
     "error": {
-        "en": "No plant or crop leaf detected in this image. Please upload a clear photo of a crop or plant leaf for disease analysis.",
-        "hi": "इस फोटो में कोई पौधा या फसल की पत्ती नहीं पाई गई। कृपया बीमारी की जांच के लिए फसल की पत्ती की स्पष्ट फोटो अपलोड करें।",
-        "mr": "या फोटोमध्ये कोणतेही पीक किंवा पानाचे चित्र आढळले नाही. कृपया रोगाच्या तपासणीसाठी पिकाच्या पानाचा स्पष्ट फोटो अपलोड करा."
+        "en": "Please upload a valid crop or leaf image.",
+        "hi": "कृपया एक वैध फसल या पत्ती की छवि अपलोड करें।",
+        "mr": "कृपया एक वैध पीक किंवा पानाचे चित्र अपलोड करा."
     }
 }
 
@@ -124,25 +124,30 @@ def analyze_image_file(image_path):
                 brown_black_count = 0
                 yellow_count = 0
                 white_count = 0
+                dark_text_count = 0
                 healthy_green_count = 0
                 skin_tone_count = 0
 
                 for r, g, b in pixels:
                     # Check for human skin tone range
-                    if r > 80 and g > 50 and b > 35 and r > g and (r - g) > 10 and (r - b) > 15:
+                    if r > 80 and g > 50 and b > 35 and r > g and (r - g) > 8 and (r - b) > 12:
                         skin_tone_count += 1
 
-                    # Check for brown/black lesions (Leaf Blight / Bacterial Spot) on foliage
+                    # Check for pure dark text pixels
+                    if r < 50 and g < 50 and b < 50:
+                        dark_text_count += 1
+
+                    # Check for brown/black lesions on foliage
                     if r < 100 and g < 90 and b < 80 and abs(r - g) < 30 and (g > b or r > b):
                         brown_black_count += 1
-                    # Check for yellowing foliage (Yellow Mosaic / Chlorosis)
+                    # Check for yellowing foliage
                     elif r > 140 and g > 130 and b < 100 and (r + g) > (2 * b + 40):
                         yellow_count += 1
-                    # Check for white powdery fungal coating (Powdery Mildew)
+                    # Check for white background / white coating
                     elif r > 210 and g > 210 and b > 210:
                         white_count += 1
-                    # Check for vibrant healthy green plant leaves
-                    elif g > r + 12 and g > b + 12:
+                    # Check for green plant foliage
+                    elif g > r + 8 and g > b + 8:
                         healthy_green_count += 1
 
                 b_ratio = brown_black_count / total
@@ -150,22 +155,31 @@ def analyze_image_file(image_path):
                 w_ratio = white_count / total
                 g_ratio = healthy_green_count / total
                 skin_ratio = skin_tone_count / total
+                dark_ratio = dark_text_count / total
 
-                plant_pixel_ratio = g_ratio + y_ratio + b_ratio + w_ratio
-
-                # Reject non-agricultural photos (human faces, people, indoor objects, low foliage)
-                if skin_ratio > 0.12 or plant_pixel_ratio < 0.12:
+                # 1. Reject text documents, paper scans, and screenshots (high white + dark text, zero green)
+                if w_ratio > 0.40 and g_ratio < 0.05:
                     return INVALID_IMAGE_RESPONSE
 
-                if w_ratio > 0.15:
+                # 2. Reject photos of humans, indoor objects, or non-plant objects
+                if skin_ratio > 0.10:
+                    return INVALID_IMAGE_RESPONSE
+
+                # 3. Require actual plant foliage or crop leaf content
+                foliage_ratio = g_ratio + y_ratio + b_ratio
+                if foliage_ratio < 0.08 and g_ratio < 0.05:
+                    return INVALID_IMAGE_RESPONSE
+
+                # Powdery mildew can only be diagnosed if white coating is on plant foliage
+                if w_ratio > 0.15 and (g_ratio + y_ratio) > 0.05:
                     selected_key = "powdery_mildew"
-                elif y_ratio > 0.20:
+                elif y_ratio > 0.18:
                     selected_key = "yellow_mosaic"
                 elif b_ratio > 0.15:
                     selected_key = "leaf_blight"
                 elif b_ratio > 0.08:
                     selected_key = "bacterial_spot"
-                elif g_ratio > 0.25:
+                elif g_ratio > 0.20:
                     selected_key = "healthy"
                 else:
                     return INVALID_IMAGE_RESPONSE

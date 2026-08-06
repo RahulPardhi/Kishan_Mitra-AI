@@ -60,11 +60,13 @@ if (googleBtn) {
         const demoUser = {
             name: "Rahul Pardhi",
             email: "rahul@example.com",
+            password: "password123",
             mobile: "+91 9876543210",
             location: "Nagpur",
             language: localStorage.getItem("language") || "en",
         };
         if (window.KisanAPI) {
+            window.KisanAPI.registerLocalUser(demoUser);
             window.KisanAPI.setToken("google_demo_token_123");
             window.KisanAPI.setUser(demoUser);
         }
@@ -102,6 +104,7 @@ if (loginBtn) {
                     });
 
                     if (res && res.success) {
+                        window.KisanAPI.registerLocalUser({ email, password: pass, ...res.user });
                         window.KisanAPI.setToken(res.token);
                         window.KisanAPI.setUser(res.user);
                         alert("Login Successful! 🚀");
@@ -110,30 +113,28 @@ if (loginBtn) {
                     }
                 } catch (apiErr) {
                     console.warn("Backend API attempt note:", apiErr.message);
+                    // If it's a valid API server response (e.g. 401 Invalid credentials), display error and stop
                     if (apiErr.message && !apiErr.message.toLowerCase().includes("failed to fetch") && !apiErr.message.toLowerCase().includes("networkerror")) {
-                        throw apiErr;
+                        alert(apiErr.message || "Invalid email or password.");
+                        return;
                     }
                 }
             }
             
-            // Local fallback
-            const localUser = {
-                _id: "local_" + Date.now(),
-                name: email.split("@")[0],
-                email: email,
-                mobile: "+91 9876543210",
-                location: "Nagpur",
-                language: localStorage.getItem("language") || "en",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-                notificationsEnabled: true
-            };
+            // Offline / Local auth check
+            const registeredUser = window.KisanAPI ? window.KisanAPI.findRegisteredUser(email) : null;
+            if (!registeredUser || registeredUser.password !== pass) {
+                alert("Invalid email or password. Please check your credentials or register first.");
+                return;
+            }
+
             try {
                 if (window.KisanAPI) {
                     window.KisanAPI.setToken("offline_token_" + Date.now());
-                    window.KisanAPI.setUser(localUser);
+                    window.KisanAPI.setUser(registeredUser);
                 } else {
-                    localStorage.setItem("profileEmail", email);
-                    localStorage.setItem("userName", email.split("@")[0]);
+                    localStorage.setItem("profileEmail", registeredUser.email);
+                    localStorage.setItem("userName", registeredUser.name);
                 }
             } catch (storageErr) {
                 console.warn("Storage warning during fallback login:", storageErr.message);
@@ -142,13 +143,7 @@ if (loginBtn) {
             window.location.href = "dashboard.html";
         } catch (err) {
             console.error("Login error:", err);
-            // If error is storage related, still proceed to dashboard
-            if (err.name === "QuotaExceededError" || (err.message && err.message.includes("quota"))) {
-                alert("Login Successful! 🚀");
-                window.location.href = "dashboard.html";
-            } else {
-                alert(err.message || "Login failed. Please check credentials.");
-            }
+            alert(err.message || "Login failed. Please check credentials.");
         } finally {
             loginBtn.disabled = false;
             loginBtn.innerText = originalText;

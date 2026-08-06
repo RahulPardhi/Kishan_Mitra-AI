@@ -12,20 +12,18 @@ const previewImage = document.getElementById("previewImage");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const resultCard = document.getElementById("resultCard");
 
-let currentImageDataUrl = localStorage.getItem("cropPreviewImage") || "";
+let currentImageDataUrl = "";
 let lastAnalysisResult = null;
 let currentFileMeta = null;
 
-// Hide result initially unless cached
+// Hide result initially
 if (resultCard) resultCard.style.display = "none";
-
-// Restore cached image preview on page load if available
-if (previewImage && currentImageDataUrl) {
-    previewImage.src = currentImageDataUrl;
-    previewImage.style.display = "block";
+if (previewImage) {
+    previewImage.src = "";
+    previewImage.style.display = "none";
 }
 
-// Image Preview & Persistence Listener
+// Image Preview Listener (In-memory preview for active upload session only)
 if (imageInput && previewImage) {
     imageInput.addEventListener("change", function () {
         if (this.files && this.files[0]) {
@@ -39,11 +37,6 @@ if (imageInput && previewImage) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 currentImageDataUrl = e.target.result;
-                try {
-                    localStorage.setItem("cropPreviewImage", currentImageDataUrl);
-                } catch (storageErr) {
-                    console.warn("Could not cache preview image in localStorage:", storageErr.message);
-                }
                 previewImage.src = currentImageDataUrl;
                 previewImage.style.display = "block";
                 if (resultCard) resultCard.style.display = "none";
@@ -156,9 +149,9 @@ const CATALOG_KEYS = ["powdery_mildew", "yellow_mosaic", "leaf_blight", "bacteri
 const INVALID_CLIENT_IMAGE = {
     isPlant: false,
     error: {
-        en: "No plant or crop leaf detected in this image. Please upload a clear photo of a crop or plant leaf for disease analysis.",
-        hi: "इस फोटो में कोई पौधा या फसल की पत्ती नहीं पाई गई। कृपया बीमारी की जांच के लिए फसल की पत्ती की स्पष्ट फोटो अपलोड करें।",
-        mr: "या फोटोमध्ये कोणतेही पीक किंवा पानाचे चित्र आढळले नाही. कृपया रोगाच्या तपासणीसाठी पिकाच्या पानाचा स्पष्ट फोटो अपलोड करा."
+        en: "Please upload a valid crop or leaf image.",
+        hi: "कृपया एक वैध फसल या पत्ती की छवि अपलोड करें।",
+        mr: "कृपया एक वैध पीक किंवा पानाचे चित्र अपलोड करा."
     }
 };
 
@@ -178,20 +171,25 @@ function classifyImageDataUrl(dataUrl, fileMeta) {
                 const imageData = ctx.getImageData(0, 0, 64, 64);
                 const pixels = imageData.data;
 
-                let brownBlack = 0, yellow = 0, white = 0, green = 0, skinCount = 0;
+                let brownBlack = 0, yellow = 0, white = 0, green = 0, skinCount = 0, darkText = 0;
                 let total = pixels.length / 4;
 
                 for (let i = 0; i < pixels.length; i += 4) {
                     const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
                     // Detect human skin tones
-                    if (r > 80 && g > 50 && b > 35 && r > g && (r - g) > 10 && (r - b) > 15) {
+                    if (r > 80 && g > 50 && b > 35 && r > g && (r - g) > 8 && (r - b) > 12) {
                         skinCount++;
                     }
 
-                    if (r < 95 && g < 85 && b < 75 && (g > b || r > b)) brownBlack++;
-                    else if (r > 150 && g > 140 && b < 110 && (r + g) > (2 * b + 30)) yellow++;
-                    else if (r > 200 && g > 200 && b > 200) white++;
-                    else if (g > r + 10 && g > b + 10) green++;
+                    // Detect dark text pixels
+                    if (r < 50 && g < 50 && b < 50) {
+                        darkText++;
+                    }
+
+                    if (r < 100 && g < 90 && b < 80 && Math.abs(r - g) < 30 && (g > b || r > b)) brownBlack++;
+                    else if (r > 140 && g > 130 && b < 100 && (r + g) > (2 * b + 40)) yellow++;
+                    else if (r > 210 && g > 210 && b > 210) white++;
+                    else if (g > r + 8 && g > b + 8) green++;
                 }
 
                 const wRatio = white / total;
@@ -199,18 +197,28 @@ function classifyImageDataUrl(dataUrl, fileMeta) {
                 const bRatio = brownBlack / total;
                 const gRatio = green / total;
                 const skinRatio = skinCount / total;
-                const plantPixelRatio = gRatio + yRatio + bRatio + wRatio;
+                const foliageRatio = gRatio + yRatio + bRatio;
 
-                // Reject photos of humans, indoor items, or non-plant objects
-                if (skinRatio > 0.12 || plantPixelRatio < 0.12) {
+                // 1. Reject text images/documents (high white background, zero green)
+                if (wRatio > 0.40 && gRatio < 0.05) {
                     return resolve(INVALID_CLIENT_IMAGE);
                 }
 
-                if (wRatio > 0.12) return resolve({ ...DISEASE_MODEL_CATALOG.powdery_mildew, isPlant: true });
+                // 2. Reject photos of humans, indoor items, or non-plant objects
+                if (skinRatio > 0.10) {
+                    return resolve(INVALID_CLIENT_IMAGE);
+                }
+
+                // 3. Require actual plant foliage or crop leaf content
+                if (foliageRatio < 0.08 && gRatio < 0.05) {
+                    return resolve(INVALID_CLIENT_IMAGE);
+                }
+
+                if (wRatio > 0.15 && (gRatio + yRatio) > 0.05) return resolve({ ...DISEASE_MODEL_CATALOG.powdery_mildew, isPlant: true });
                 if (yRatio > 0.18) return resolve({ ...DISEASE_MODEL_CATALOG.yellow_mosaic, isPlant: true });
                 if (bRatio > 0.15) return resolve({ ...DISEASE_MODEL_CATALOG.leaf_blight, isPlant: true });
-                if (bRatio > 0.05) return resolve({ ...DISEASE_MODEL_CATALOG.bacterial_spot, isPlant: true });
-                if (gRatio > 0.25) return resolve({ ...DISEASE_MODEL_CATALOG.healthy, isPlant: true });
+                if (bRatio > 0.08) return resolve({ ...DISEASE_MODEL_CATALOG.bacterial_spot, isPlant: true });
+                if (gRatio > 0.20) return resolve({ ...DISEASE_MODEL_CATALOG.healthy, isPlant: true });
 
                 resolve(INVALID_CLIENT_IMAGE);
             } catch (e) {
@@ -235,7 +243,7 @@ function renderResult(analysis, imgUrl) {
         const errObj = analysis.error || {};
         const errMsg = typeof errObj === "string"
             ? errObj
-            : (errObj[lang] || errObj.en || "No plant or crop leaf detected in this image. Please upload a clear photo of a crop or plant leaf for disease analysis.");
+            : (errObj[lang] || errObj.en || "Please upload a valid crop or leaf image.");
 
         resultCard.innerHTML = `
             <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 16px; padding: 22px; text-align: center; color: #856404; box-shadow: 0 6px 18px rgba(0,0,0,0.08); animation: fadeIn 0.3s ease-in-out;">
@@ -266,7 +274,7 @@ function renderResult(analysis, imgUrl) {
     }
 
     // Determine clean image URL priority: Data URL > HTTP relative URL > DOM Image Src
-    let displayImg = currentImageDataUrl || localStorage.getItem("cropPreviewImage");
+    let displayImg = currentImageDataUrl;
     if (!displayImg && imgUrl) {
         displayImg = (imgUrl.startsWith("http") || imgUrl.startsWith("data:")) ? imgUrl : `http://localhost:5000${imgUrl}`;
     }

@@ -98,6 +98,12 @@
 
             try {
                 if (window.KisanAPI) {
+                    const existingUser = window.KisanAPI.findRegisteredUser(email);
+                    if (existingUser) {
+                        alert("User already exists with this email address.");
+                        return;
+                    }
+
                     try {
                         const res = await window.KisanAPI.request("/auth/register", {
                             method: "POST",
@@ -111,6 +117,15 @@
                         });
 
                         if (res && res.success) {
+                            window.KisanAPI.registerLocalUser({
+                                name,
+                                email,
+                                password: pass,
+                                mobile,
+                                location: "Nagpur",
+                                language: localStorage.getItem("language") || "en",
+                                ...(res.user || {})
+                            });
                             window.KisanAPI.setToken(res.token);
                             window.KisanAPI.setUser(res.user);
                             alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
@@ -120,7 +135,6 @@
                         throw new Error(res?.message || "Registration failed. Please try again.");
                     } catch (apiErr) {
                         console.warn("Registration API attempt note:", apiErr.message);
-                        // If it's an explicit server error response (e.g. user already exists), inform user directly
                         if (apiErr.message && !apiErr.message.toLowerCase().includes("failed to fetch") && !apiErr.message.toLowerCase().includes("networkerror")) {
                             throw apiErr;
                         }
@@ -132,6 +146,7 @@
                     _id: "local_" + Date.now(),
                     name: name,
                     email: email,
+                    password: pass,
                     mobile: mobile || "+91 9876543210",
                     location: "Nagpur",
                     language: localStorage.getItem("language") || "en",
@@ -139,6 +154,7 @@
                     notificationsEnabled: true
                 };
                 if (window.KisanAPI) {
+                    window.KisanAPI.registerLocalUser(localUser);
                     window.KisanAPI.setToken("offline_token_" + Date.now());
                     window.KisanAPI.setUser(localUser);
                 } else {

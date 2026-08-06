@@ -151,14 +151,14 @@ const analyzeDisease = async (req, res) => {
             try {
                 const prompt = `Inspect this image carefully.
 First determine whether the image shows a plant, crop, leaf, or agricultural foliage.
-If the image does NOT show a plant, crop, or leaf (for example: it shows humans, faces, people, animals, vehicles, indoor rooms, buildings, or non-crop objects):
+If the image does NOT show a plant, crop, or leaf (for example: it shows humans, faces, text, documents, papers, screenshots, animals, vehicles, indoor rooms, buildings, or non-crop objects):
 Return ONLY this JSON:
 {
   "isPlant": false,
   "error": {
-    "en": "No plant or crop leaf detected in this image. Please upload a clear photo of a crop or plant leaf for disease analysis.",
-    "hi": "इस फोटो में कोई पौधा या फसल की पत्ती नहीं पाई गई। कृपया बीमारी की जांच के लिए फसल की पत्ती की स्पष्ट फोटो अपलोड करें।",
-    "mr": "या फोटोमध्ये कोणतेही पीक किंवा पानाचे चित्र आढळले नाही. कृपया रोगाच्या तपासणीसाठी पिकाच्या पानाचा स्पष्ट फोटो अपलोड करा."
+    "en": "Please upload a valid crop or leaf image.",
+    "hi": "कृपया एक वैध फसल या पत्ती की छवि अपलोड करें।",
+    "mr": "कृपया एक वैध पीक किंवा पानाचे चित्र अपलोड करा."
   }
 }
 
@@ -196,9 +196,9 @@ Return ONLY a JSON object in EXACTLY this format with no markdown headers or bac
                                     aiResult = {
                                         isPlant: false,
                                         error: parsed.error || {
-                                            en: "No plant or crop leaf detected in this image. Please upload a clear photo of a crop or plant leaf for disease analysis.",
-                                            hi: "इस फोटो में कोई पौधा या फसल की पत्ती नहीं पाई गई। कृपया बीमारी की जांच के लिए फसल की पत्ती की स्पष्ट फोटो अपलोड करें।",
-                                            mr: "या फोटोमध्ये कोणतेही पीक किंवा पानाचे चित्र आढळले नाही. कृपया रोगाच्या तपासणीसाठी पिकाच्या पानाचा स्पष्ट फोटो अपलोड करा."
+                                            en: "Please upload a valid crop or leaf image.",
+                                            hi: "कृपया एक वैध फसल या पत्ती की छवि अपलोड करें।",
+                                            mr: "कृपया एक वैध पीक किंवा पानाचे चित्र अपलोड करा."
                                         }
                                     };
                                 } else if (parsed.disease && (parsed.disease.en || typeof parsed.disease === "string")) {

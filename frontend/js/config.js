@@ -1,5 +1,7 @@
 // Kisan Mitra AI - Central Frontend API Configuration
-const API_BASE_URL = "https://kishan-mitra-ai.onrender.com/api";
+const API_BASE_URL = (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.startsWith("http"))
+    ? (window.location.origin.includes("onrender.com") ? "https://kishan-mitra-ai.onrender.com/api" : `${window.location.origin}/api`)
+    : "http://localhost:5000/api";
 const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
 
 const safeSetItem = (key, value) => {
@@ -61,6 +63,61 @@ const isDefaultAvatar = (avatar) => !avatar || avatar === DEFAULT_AVATAR;
 const KisanAPI = {
     getToken: () => localStorage.getItem("token") || "",
     setToken: (token) => safeSetItem("token", token),
+
+    getRegisteredUsers: () => {
+        try {
+            const users = JSON.parse(localStorage.getItem("registeredUsers"));
+            if (Array.isArray(users) && users.length > 0) return users;
+        } catch (e) {}
+        // Seed default demo user if empty
+        const defaultUsers = [{
+            _id: "demo_user_1",
+            name: "Rahul Pardhi",
+            email: "rahul@example.com",
+            password: "password123",
+            mobile: "+91 9876543210",
+            location: "Nagpur",
+            language: "en",
+            avatar: DEFAULT_AVATAR,
+            notificationsEnabled: true
+        }];
+        try {
+            localStorage.setItem("registeredUsers", JSON.stringify(defaultUsers));
+        } catch (e) {}
+        return defaultUsers;
+    },
+
+    findRegisteredUser: (email) => {
+        if (!email) return null;
+        const normalized = email.trim().toLowerCase();
+        const users = KisanAPI.getRegisteredUsers();
+        return users.find(u => u.email && u.email.trim().toLowerCase() === normalized) || null;
+    },
+
+    registerLocalUser: (userObj) => {
+        if (!userObj || !userObj.email) return;
+        const users = KisanAPI.getRegisteredUsers();
+        const normalized = userObj.email.trim().toLowerCase();
+        const existingIdx = users.findIndex(u => u.email && u.email.trim().toLowerCase() === normalized);
+        const newUser = {
+            _id: userObj._id || "local_" + Date.now(),
+            name: userObj.name || userObj.email.split("@")[0],
+            email: normalized,
+            password: userObj.password || "",
+            mobile: userObj.mobile || "+91 9876543210",
+            location: userObj.location || "Nagpur",
+            language: userObj.language || "en",
+            avatar: userObj.avatar || DEFAULT_AVATAR,
+            notificationsEnabled: userObj.notificationsEnabled !== false
+        };
+        if (existingIdx >= 0) {
+            users[existingIdx] = { ...users[existingIdx], ...newUser };
+        } else {
+            users.push(newUser);
+        }
+        safeSetItem("registeredUsers", JSON.stringify(users));
+        return newUser;
+    },
     
     getUser: () => {
         try {
@@ -98,6 +155,13 @@ const KisanAPI = {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("userName");
+        localStorage.removeItem("profileEmail");
+        localStorage.removeItem("profileMobile");
+        localStorage.removeItem("profileLocation");
+        localStorage.removeItem("profileLanguage");
+        localStorage.removeItem("cropPreviewImage");
+        localStorage.removeItem("profileImage");
+        localStorage.removeItem("profileImageOwner");
     },
 
     getAvatar: (user) => (user && !isDefaultAvatar(user.avatar) ? user.avatar : getSavedAvatar(user)),
