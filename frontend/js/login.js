@@ -47,30 +47,14 @@ if (loginBtn) {
 const googleBtn = document.querySelector(".google-btn");
 
 if (googleBtn) {
-    googleBtn.addEventListener("mouseenter", () => {
-        googleBtn.style.transform = "translateY(-3px)";
-    });
+    googleBtn.classList.add("is-disabled");
+    googleBtn.setAttribute("disabled", "true");
+    googleBtn.setAttribute("aria-disabled", "true");
+    googleBtn.title = "Google Sign-In is temporarily disabled";
 
-    googleBtn.addEventListener("mouseleave", () => {
-        googleBtn.style.transform = "translateY(0)";
-    });
-
-    googleBtn.addEventListener("click", () => {
-        alert("Google Sign-In integration ready. Signing in with primary Google account...");
-        const demoUser = {
-            name: "Rahul Pardhi",
-            email: "rahul@example.com",
-            password: "password123",
-            mobile: "+91 9876543210",
-            location: "Nagpur",
-            language: localStorage.getItem("language") || "en",
-        };
-        if (window.KisanAPI) {
-            window.KisanAPI.registerLocalUser(demoUser);
-            window.KisanAPI.setToken("google_demo_token_123");
-            window.KisanAPI.setUser(demoUser);
-        }
-        window.location.href = "dashboard.html";
+    googleBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Google Sign-In is currently disabled. Please sign in with your email and password.");
     });
 }
 
@@ -114,7 +98,7 @@ if (loginBtn) {
                 } catch (apiErr) {
                     console.warn("Backend API attempt note:", apiErr.message);
                     // If it's a valid API server response (e.g. 401 Invalid credentials), display error and stop
-                    if (apiErr.message && !apiErr.message.toLowerCase().includes("failed to fetch") && !apiErr.message.toLowerCase().includes("networkerror")) {
+                    if (window.KisanAPI && !window.KisanAPI.isBackendUnreachable(apiErr)) {
                         alert(apiErr.message || "Invalid email or password.");
                         return;
                     }

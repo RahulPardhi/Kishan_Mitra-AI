@@ -83,27 +83,55 @@ async function loadLiveWeather() {
     const weatherSection = document.querySelector(".weather-card");
     if (!weatherSection) return;
 
-    const userLocation = localStorage.getItem("profileLocation") || "Nagpur";
-    try {
-        if (window.KisanAPI) {
-            const res = await window.KisanAPI.request(`/weather?city=${encodeURIComponent(userLocation)}`);
-            if (res.success && res.data) {
-                const w = res.data;
-                const tempEl = weatherSection.querySelector("h2");
-                const descEl = weatherSection.querySelector("p");
-                const iconEl = weatherSection.querySelector(".weather-icon");
+    const renderSnippet = (w) => {
+        const tempEl = weatherSection.querySelector("h2");
+        const descEl = weatherSection.querySelector("p");
+        const iconEl = weatherSection.querySelector(".weather-icon");
 
-                if (tempEl) tempEl.innerText = w.temperature;
-                if (descEl) descEl.innerText = `${w.condition} (${w.city})`;
-                if (iconEl) {
-                    if (w.condition.toLowerCase().includes("rain")) iconEl.innerText = "🌧️";
-                    else if (w.condition.toLowerCase().includes("cloud")) iconEl.innerText = "⛅";
-                    else iconEl.innerText = "☀️";
+        if (tempEl) tempEl.innerText = w.temperature;
+        if (descEl) descEl.innerText = `${w.condition} (${w.city})`;
+        if (iconEl) {
+            if (w.condition.toLowerCase().includes("rain")) iconEl.innerText = "🌧️";
+            else if (w.condition.toLowerCase().includes("cloud")) iconEl.innerText = "⛅";
+            else iconEl.innerText = "☀️";
+        }
+        if (w.city) localStorage.setItem("profileLocation", w.city);
+    };
+
+    const fetchByEndpoint = async (endpoint) => {
+        try {
+            if (window.KisanAPI) {
+                const res = await window.KisanAPI.request(endpoint);
+                if (res && res.success && res.data) {
+                    renderSnippet(res.data);
+                    return true;
                 }
             }
+        } catch (e) {
+            console.warn("Live weather snippet warning:", e.message);
         }
-    } catch (err) {
-        console.warn("Using default weather snippet");
+        return false;
+    };
+
+    const savedCity = localStorage.getItem("profileLocation") || "Nagpur";
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                const success = await fetchByEndpoint(`/weather?lat=${lat}&lon=${lon}`);
+                if (!success) {
+                    await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
+                }
+            },
+            async () => {
+                await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
+            },
+            { timeout: 8000, enableHighAccuracy: true }
+        );
+    } else {
+        await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
     }
 }
 

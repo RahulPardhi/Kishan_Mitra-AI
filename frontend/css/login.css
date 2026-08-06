@@ -202,6 +202,19 @@ body {
   transform: translateY(-1px);
 }
 
+.google-btn.is-disabled, .google-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  background: var(--bg-page);
+  border-color: var(--border-light);
+}
+
+.google-btn.is-disabled:hover, .google-btn:disabled:hover {
+  transform: none !important;
+  border-color: var(--border-light);
+  background: var(--bg-page);
+}
+
 /* Register / Sign-in Link */
 .register {
   text-align: center;

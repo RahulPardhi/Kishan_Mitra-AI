@@ -135,7 +135,7 @@
                         throw new Error(res?.message || "Registration failed. Please try again.");
                     } catch (apiErr) {
                         console.warn("Registration API attempt note:", apiErr.message);
-                        if (apiErr.message && !apiErr.message.toLowerCase().includes("failed to fetch") && !apiErr.message.toLowerCase().includes("networkerror")) {
+                        if (window.KisanAPI && !window.KisanAPI.isBackendUnreachable(apiErr)) {
                             throw apiErr;
                         }
                     }

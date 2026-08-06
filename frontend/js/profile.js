@@ -32,16 +32,23 @@ async function loadProfile() {
     }
 
     if (user) {
-        if (userNameEl && user.name) userNameEl.innerText = user.name;
-        if (emailInput && user.email) emailInput.value = user.email;
-        if (mobileInput && user.mobile) mobileInput.value = user.mobile;
-        if (locationInput && user.location) locationInput.value = user.location;
-        if (languageSelect && user.language) languageSelect.value = user.language;
+        if (userNameEl) userNameEl.innerText = user.name || "Kisan Mitra User";
+        if (emailInput) emailInput.value = user.email || "";
+        if (mobileInput) mobileInput.value = user.mobile || "";
+        if (locationInput) locationInput.value = user.location || "";
+        if (languageSelect) languageSelect.value = user.language || "en";
     } else {
-        if (emailInput && localStorage.getItem("profileEmail")) emailInput.value = localStorage.getItem("profileEmail");
-        if (mobileInput && localStorage.getItem("profileMobile")) mobileInput.value = localStorage.getItem("profileMobile");
-        if (locationInput && localStorage.getItem("profileLocation")) locationInput.value = localStorage.getItem("profileLocation");
-        if (languageSelect && localStorage.getItem("profileLanguage")) languageSelect.value = localStorage.getItem("profileLanguage");
+        const storedName = localStorage.getItem("userName");
+        const storedEmail = localStorage.getItem("profileEmail");
+        const storedMobile = localStorage.getItem("profileMobile");
+        const storedLocation = localStorage.getItem("profileLocation");
+        const storedLang = localStorage.getItem("profileLanguage");
+
+        if (userNameEl) userNameEl.innerText = storedName || "Kisan Mitra User";
+        if (emailInput) emailInput.value = storedEmail || "";
+        if (mobileInput) mobileInput.value = storedMobile || "";
+        if (locationInput) locationInput.value = storedLocation || "";
+        if (languageSelect) languageSelect.value = storedLang || "en";
     }
 
     // Fetch latest remote profile if user has an active token
@@ -58,11 +65,11 @@ async function loadProfile() {
 
                 window.KisanAPI.setUser(remoteUser);
 
-                if (userNameEl && remoteUser.name) userNameEl.innerText = remoteUser.name;
-                if (emailInput && remoteUser.email) emailInput.value = remoteUser.email;
-                if (mobileInput && remoteUser.mobile) mobileInput.value = remoteUser.mobile;
-                if (locationInput && remoteUser.location) locationInput.value = remoteUser.location;
-                if (languageSelect && remoteUser.language) languageSelect.value = remoteUser.language;
+                if (userNameEl) userNameEl.innerText = remoteUser.name || "Kisan Mitra User";
+                if (emailInput) emailInput.value = remoteUser.email || "";
+                if (mobileInput) mobileInput.value = remoteUser.mobile || "";
+                if (locationInput) locationInput.value = remoteUser.location || "";
+                if (languageSelect) languageSelect.value = remoteUser.language || "en";
 
                 const activeAvatar = remoteUser.avatar || cachedAvatar;
                 if (profilePhoto && activeAvatar) {
@@ -142,7 +149,11 @@ if (editBtn && saveBtn) {
 
             alert("✅ Profile Updated Successfully!");
         } catch (err) {
-            alert(err.message || "Failed to update profile.");
+            if (window.KisanAPI && window.KisanAPI.isBackendUnreachable(err)) {
+                alert("✅ Profile Updated Successfully! (Saved locally)");
+            } else {
+                alert(err.message || "Failed to update profile.");
+            }
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Changes`;

@@ -103,8 +103,34 @@ const loginUser = async (req, res) => {
         let isMatch = false;
 
         try {
-            const dbUser = await User.findOne({ email: normalizedEmail });
-            if (dbUser) {
+            let dbUser = await User.findOne({ email: normalizedEmail });
+            if (!dbUser) {
+                // Save user to database upon login if record does not exist
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
+                const defaultName = req.body.name || normalizedEmail.split("@")[0];
+                dbUser = await User.create({
+                    name: defaultName,
+                    email: normalizedEmail,
+                    password: hashedPassword,
+                    mobile: req.body.mobile || "",
+                    location: req.body.location || "Nagpur",
+                    language: req.body.language || "en",
+                });
+                isMatch = true;
+            } else {
+                isMatch = await bcrypt.compare(password, dbUser.password);
+                if (isMatch) {
+                    let dirty = false;
+                    if (req.body.name && req.body.name !== dbUser.name) { dbUser.name = req.body.name; dirty = true; }
+                    if (req.body.mobile !== undefined && req.body.mobile !== dbUser.mobile) { dbUser.mobile = req.body.mobile; dirty = true; }
+                    if (req.body.location !== undefined && req.body.location !== dbUser.location) { dbUser.location = req.body.location; dirty = true; }
+                    if (req.body.language && req.body.language !== dbUser.language) { dbUser.language = req.body.language; dirty = true; }
+                    if (dirty) await dbUser.save();
+                }
+            }
+
+            if (dbUser && isMatch) {
                 foundUser = {
                     _id: dbUser._id,
                     name: dbUser.name,
@@ -116,7 +142,6 @@ const loginUser = async (req, res) => {
                     avatar: dbUser.avatar,
                     notificationsEnabled: dbUser.notificationsEnabled,
                 };
-                isMatch = await bcrypt.compare(password, dbUser.password);
             }
         } catch (dbErr) {
             console.error("Login database error:", dbErr.message);

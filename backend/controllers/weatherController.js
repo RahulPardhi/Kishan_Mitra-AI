@@ -19,16 +19,47 @@ const fetchJson = (url) => {
 
 const getWeather = async (req, res) => {
     try {
+        const reqLat = parseFloat(req.query.lat);
+        const reqLon = parseFloat(req.query.lon);
         const queryCity = req.query.city || "Nagpur";
+
+        let latitude = null;
+        let longitude = null;
+        let cityName = queryCity;
+
         let weatherData = null;
 
         try {
-            // Geocoding via Open-Meteo
-            const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(queryCity)}&count=1&language=en&format=json`;
-            const geoRes = await fetchJson(geoUrl);
+            if (!isNaN(reqLat) && !isNaN(reqLon)) {
+                latitude = reqLat;
+                longitude = reqLon;
 
-            if (geoRes && geoRes.results && geoRes.results.length > 0) {
-                const { latitude, longitude, name, admin1, country } = geoRes.results[0];
+                // Reverse geocoding to get city / locality name
+                try {
+                    const reverseGeoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
+                    const reverseRes = await fetchJson(reverseGeoUrl);
+                    if (reverseRes) {
+                        const loc = reverseRes.city || reverseRes.locality || reverseRes.principalSubdivision || reverseRes.countryName;
+                        if (loc) cityName = loc;
+                    }
+                } catch (rErr) {
+                    console.warn("Reverse geocoding warning:", rErr.message);
+                }
+            } else {
+                // Geocoding via Open-Meteo
+                const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(queryCity)}&count=1&language=en&format=json`;
+                const geoRes = await fetchJson(geoUrl);
+
+                if (geoRes && geoRes.results && geoRes.results.length > 0) {
+                    latitude = geoRes.results[0].latitude;
+                    longitude = geoRes.results[0].longitude;
+                    const name = geoRes.results[0].name;
+                    const admin1 = geoRes.results[0].admin1;
+                    cityName = `${name}${admin1 ? ", " + admin1 : ""}`;
+                }
+            }
+
+            if (latitude !== null && longitude !== null) {
                 const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m`;
                 const currentWeather = await fetchJson(weatherUrl);
 
@@ -54,7 +85,7 @@ const getWeather = async (req, res) => {
                     }
 
                     weatherData = {
-                        city: `${name}${admin1 ? ", " + admin1 : ""}`,
+                        city: cityName,
                         temperature: `${tempC}°C`,
                         tempNum: tempC,
                         humidity: `${humidityPct}%`,
@@ -74,7 +105,7 @@ const getWeather = async (req, res) => {
         // Fallback data generator
         if (!weatherData) {
             weatherData = {
-                city: queryCity.charAt(0).toUpperCase() + queryCity.slice(1),
+                city: cityName.charAt(0).toUpperCase() + cityName.slice(1),
                 temperature: "30°C",
                 tempNum: 30,
                 humidity: "65%",

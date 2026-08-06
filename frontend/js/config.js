@@ -67,24 +67,9 @@ const KisanAPI = {
     getRegisteredUsers: () => {
         try {
             const users = JSON.parse(localStorage.getItem("registeredUsers"));
-            if (Array.isArray(users) && users.length > 0) return users;
+            if (Array.isArray(users)) return users;
         } catch (e) {}
-        // Seed default demo user if empty
-        const defaultUsers = [{
-            _id: "demo_user_1",
-            name: "Rahul Pardhi",
-            email: "rahul@example.com",
-            password: "password123",
-            mobile: "+91 9876543210",
-            location: "Nagpur",
-            language: "en",
-            avatar: DEFAULT_AVATAR,
-            notificationsEnabled: true
-        }];
-        try {
-            localStorage.setItem("registeredUsers", JSON.stringify(defaultUsers));
-        } catch (e) {}
-        return defaultUsers;
+        return [];
     },
 
     findRegisteredUser: (email) => {
@@ -167,6 +152,20 @@ const KisanAPI = {
     getAvatar: (user) => (user && !isDefaultAvatar(user.avatar) ? user.avatar : getSavedAvatar(user)),
     setAvatar: (avatar, user) => saveAvatar(avatar, user || KisanAPI.getUser()),
     
+    isBackendUnreachable: (error) => {
+        if (!error) return false;
+        if (error.isNetworkOrParseError) return true;
+        const msg = String(error.message || "").toLowerCase();
+        return msg.includes("failed to fetch") ||
+               msg.includes("networkerror") ||
+               msg.includes("unexpected token") ||
+               msg.includes("not valid json") ||
+               msg.includes("failed to communicate") ||
+               msg.includes("non-json response") ||
+               msg.includes("service endpoint not found") ||
+               msg.includes("backend service error");
+    },
+    
     request: async (endpoint, options = {}) => {
         const url = `${API_BASE_URL}${endpoint}`;
         const headers = options.headers || {};
@@ -185,13 +184,55 @@ const KisanAPI = {
                 ...options,
                 headers,
             });
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || `Request failed with status ${response.status}`);
+
+            const contentType = response.headers.get("content-type") || "";
+            let data = null;
+
+            if (contentType.includes("application/json")) {
+                try {
+                    data = await response.json();
+                } catch (jsonErr) {
+                    console.warn(`API JSON parse error [${endpoint}]:`, jsonErr.message);
+                    data = null;
+                }
+            } else {
+                const rawText = await response.text();
+                try {
+                    data = JSON.parse(rawText);
+                } catch (e) {
+                    data = null;
+                }
             }
+
+            if (!response.ok) {
+                const errMsg = (data && data.message)
+                    ? data.message
+                    : `Backend service error (${response.status})`;
+                const err = new Error(errMsg);
+                err.status = response.status;
+                if (response.status === 404 || response.status >= 500) {
+                    err.isNetworkOrParseError = true;
+                }
+                throw err;
+            }
+
+            if (!data) {
+                const err = new Error(`Failed to communicate with API service (${response.status})`);
+                err.isNetworkOrParseError = true;
+                throw err;
+            }
+
             return data;
         } catch (error) {
             console.warn(`API Error [${endpoint}]:`, error.message);
+            if (error.name === "SyntaxError" || error.message.includes("is not valid JSON") || error.message.includes("Unexpected token")) {
+                const normalizedErr = new Error("Failed to communicate with API backend service.");
+                normalizedErr.isNetworkOrParseError = true;
+                throw normalizedErr;
+            }
+            if (error.message.toLowerCase().includes("failed to fetch") || error.message.toLowerCase().includes("networkerror")) {
+                error.isNetworkOrParseError = true;
+            }
             throw error;
         }
     }
@@ -228,6 +269,14 @@ window.KisanAPI = KisanAPI;
     region.setAttribute("aria-live", "polite");
     document.body.appendChild(region);
 
+    const sanitizeMessage = (msg) => {
+        const text = String(msg || "");
+        if (text.includes("is not valid JSON") || text.includes("Unexpected token") || text.includes("SyntaxError")) {
+            return "Unable to connect to the backend server. Operating in local mode.";
+        }
+        return text;
+    };
+
     const getType = (message, requestedType) => {
         if (requestedType) return requestedType;
         if (/fail|error|invalid|unable|please select|please enter|please fill/i.test(message)) return "error";
@@ -238,14 +287,15 @@ window.KisanAPI = KisanAPI;
     const titles = { success: "Success", error: "Action needed", warning: "Please note", info: "Kisan Mitra" };
 
     const notify = (message, options = {}) => {
-        const type = getType(String(message || ""), options.type);
+        const cleanMsg = sanitizeMessage(message);
+        const type = getType(cleanMsg, options.type);
         const toast = document.createElement("article");
         toast.className = `kisan-toast is-${type}`;
         toast.setAttribute("role", type === "error" ? "alert" : "status");
         const icon = document.createElement("span"); icon.className = "kisan-toast__icon"; icon.textContent = icons[type];
         const copy = document.createElement("div");
         const title = document.createElement("strong"); title.className = "kisan-toast__title"; title.textContent = options.title || titles[type];
-        const text = document.createElement("p"); text.className = "kisan-toast__message"; text.textContent = String(message || "");
+        const text = document.createElement("p"); text.className = "kisan-toast__message"; text.textContent = cleanMsg;
         const close = document.createElement("button"); close.className = "kisan-toast__close"; close.type = "button"; close.setAttribute("aria-label", "Dismiss notification"); close.textContent = "×";
         copy.append(title, text); toast.append(icon, copy, close); region.appendChild(toast);
         const dismiss = () => { if (!toast.isConnected) return; toast.classList.add("is-leaving"); setTimeout(() => toast.remove(), 230); };
