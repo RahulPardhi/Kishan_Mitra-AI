@@ -23,9 +23,8 @@ Kisan Mitra AI is an AI-powered smart farming assistant designed to help farmers
 ## 🛠️ Tech Stack
 
 ### Frontend
-- HTML
-- CSS
-- JavaScript (ES6)
+- React.js
+- CSS3
 
 ### Backend
 - Node.js
