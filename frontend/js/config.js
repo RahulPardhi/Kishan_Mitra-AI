@@ -1,7 +1,7 @@
 // Kisan Mitra AI - Central Frontend API Configuration
 const API_BASE_URL = (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.startsWith("http"))
     ? (window.location.origin.includes("onrender.com")
-        ? "https://kishan-mitra-ai.onrender.com/api"
+        ? `${window.location.origin}/api`
         : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
             ? `http://${window.location.hostname}:5000/api`
             : `${window.location.origin}/api`)
