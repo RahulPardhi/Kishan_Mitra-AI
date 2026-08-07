@@ -139,11 +139,13 @@ const KisanAPI = {
 
     getTheme: (user) => {
         const u = user || KisanAPI.getUser();
-        if (!u || (!u.email && !localStorage.getItem("profileEmail"))) return false; // Default light for unauthenticated / splash
-        if (typeof u.darkMode === "boolean") return u.darkMode;
         const key = KisanAPI.getThemeKey(u);
         if (key && localStorage.getItem(key) !== null) {
             return localStorage.getItem(key) === "true";
+        }
+        if (typeof u?.darkMode === "boolean") return u.darkMode;
+        if (localStorage.getItem("darkMode") !== null) {
+            return localStorage.getItem("darkMode") === "true";
         }
         return false;
     },
@@ -153,6 +155,7 @@ const KisanAPI = {
         if (u) u.darkMode = isDark;
         const key = KisanAPI.getThemeKey(u);
         if (key) safeSetItem(key, isDark ? "true" : "false");
+        safeSetItem("darkMode", isDark ? "true" : "false");
         try {
             const cachedUser = JSON.parse(localStorage.getItem("user") || "null");
             if (cachedUser) {

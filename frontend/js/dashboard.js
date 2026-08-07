@@ -1,5 +1,7 @@
 // Apply Dark Mode on Page Load
-if (localStorage.getItem("darkMode") === "true") {
+if (window.KisanAPI) {
+    window.KisanAPI.applyTheme();
+} else if (localStorage.getItem("darkMode") === "true") {
     document.body.classList.add("dark");
 }
 
@@ -66,6 +68,7 @@ async function loadUserData() {
             const res = await window.KisanAPI.request("/auth/profile");
             if (res.success && res.user) {
                 window.KisanAPI.setUser(res.user);
+                window.KisanAPI.applyTheme();
                 name = res.user.name;
             }
         } catch (e) {
