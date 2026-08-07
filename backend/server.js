@@ -25,8 +25,16 @@ app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 // Static uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Serve Frontend Static Files
-app.use(express.static(path.join(__dirname, "../frontend")));
+// Serve Frontend Static Files (no-cache to ensure latest updates are always served)
+app.use(express.static(path.join(__dirname, "../frontend"), {
+    etag: false,
+    maxAge: 0,
+    setHeaders: (res) => {
+        res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.set("Pragma", "no-cache");
+        res.set("Expires", "0");
+    },
+}));
 
 // API Routes
 app.use("/api/auth", authRoutes);
