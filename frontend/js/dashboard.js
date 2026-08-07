@@ -168,14 +168,26 @@ function updateGreeting() {
     let icon = "🌞";
     let fallback = "Good Morning";
 
-    if (hour >= 12 && hour < 17) {
+    if (hour >= 0 && hour < 5) {
+        key = "goodNight";
+        icon = "🌙";
+        fallback = "Good Night";
+    } else if (hour >= 5 && hour < 12) {
+        key = "goodMorning";
+        icon = "🌞";
+        fallback = "Good Morning";
+    } else if (hour >= 12 && hour < 17) {
         key = "goodAfternoon";
         icon = "☀️";
         fallback = "Good Afternoon";
-    } else if (hour >= 17) {
+    } else if (hour >= 17 && hour < 21) {
         key = "goodEvening";
-        icon = "🌙";
+        icon = "🌇";
         fallback = "Good Evening";
+    } else {
+        key = "goodNight";
+        icon = "🌙";
+        fallback = "Good Night";
     }
 
     const translatedText = window.t ? window.t(key, fallback) : fallback;
