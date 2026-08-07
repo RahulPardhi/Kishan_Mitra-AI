@@ -36,18 +36,20 @@
 
             <!-- Email -->
             <label data-key="emailAddress">Email Address</label>
-            <div class="input-box">
+            <div class="input-box" id="emailBox">
                 <i class="fa-solid fa-envelope"></i>
-                <input type="email" data-key-placeholder="enterEmail" placeholder="Enter your email">
+                <input type="email" id="loginEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
             </div>
+            <small class="error-text" id="loginEmailError"></small>
 
             <!-- Password -->
             <label data-key="password">Password</label>
-            <div class="input-box">
+            <div class="input-box" id="passwordBox">
                 <i class="fa-solid fa-lock"></i>
                 <input id="password" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
                 <i id="togglePassword" class="fa-solid fa-eye"></i>
             </div>
+            <small class="error-text" id="loginPasswordError"></small>
 
             <div class="forgot">
                 <a href="#" data-key="forgotPassword">Forgot Password?</a>

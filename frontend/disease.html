@@ -27,12 +27,40 @@
             <h2 data-key="disease">Crop Disease Detection</h2>
         </header>
 
-        <!-- Upload Box -->
-        <div class="upload-box screen-enter">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <h3 data-key="uploadImage">Upload Crop Image</h3>
-            <p data-key="uploadDesc">Select a clear image of the affected crop leaf.</p>
-            <input type="file" id="imageInput" accept="image/*">
+        <!-- Upload & Camera Options -->
+        <div class="upload-options screen-enter">
+            <div class="upload-box" id="uploadBox">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <h3 data-key="uploadImage">Upload Image</h3>
+                <p data-key="uploadDesc">Select from gallery</p>
+                <input type="file" id="imageInput" accept="image/*">
+            </div>
+
+            <div class="camera-box" id="cameraBox">
+                <i class="fa-solid fa-camera"></i>
+                <h3>Take Photo</h3>
+                <p>Capture with camera</p>
+                <input type="file" id="cameraInput" accept="image/*" capture="environment">
+            </div>
+        </div>
+
+        <!-- Live Camera Viewfinder Modal -->
+        <div id="cameraModal" class="camera-modal" style="display: none;">
+            <div class="camera-modal-content">
+                <div class="camera-modal-header">
+                    <h3><i class="fa-solid fa-camera"></i> Live Crop Camera</h3>
+                    <button type="button" id="closeCameraBtn" class="close-camera-btn">&times;</button>
+                </div>
+                <div class="video-container">
+                    <video id="webcamVideo" autoplay playsinline></video>
+                    <canvas id="webcamCanvas" style="display: none;"></canvas>
+                </div>
+                <div class="camera-modal-footer">
+                    <button type="button" id="snapBtn" class="snap-photo-btn">
+                        <i class="fa-solid fa-circle-dot"></i> Snap Leaf Photo
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Image Preview -->

@@ -1,6 +1,6 @@
-// Apply Dark Mode on Page Load
-if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+// Apply User-Specific Dark Mode on Page Load
+if (window.KisanAPI) {
+    window.KisanAPI.applyTheme();
 }
 
 console.log("Weather Page Loaded 🌤️");
@@ -15,6 +15,10 @@ async function fetchWeather() {
     const conditionEl = document.getElementById("condition");
     const adviceEl = document.getElementById("advice");
 
+    if (cityEl && !cityEl.textContent.trim()) {
+        cityEl.textContent = "Detecting live location...";
+    }
+
     const renderData = (data) => {
         const lang = localStorage.getItem("language") || "en";
         if (cityEl) cityEl.textContent = data.city;
@@ -27,8 +31,13 @@ async function fetchWeather() {
         if (adviceEl && data.advice) {
             adviceEl.innerHTML = data.advice[lang] || data.advice.en;
         }
-        if (data.city) {
+        if (data.city && data.city !== "Your Location") {
             localStorage.setItem("profileLocation", data.city);
+            let user = window.KisanAPI ? window.KisanAPI.getUser() : null;
+            if (user) {
+                user.location = data.city;
+                window.KisanAPI.setUser(user);
+            }
         }
     };
 
@@ -47,7 +56,7 @@ async function fetchWeather() {
         return false;
     };
 
-    const defaultCity = localStorage.getItem("profileLocation") || "Nagpur";
+    const savedCity = localStorage.getItem("profileLocation") || "";
 
     // Request device current location via browser Geolocation API
     if ("geolocation" in navigator) {
@@ -56,18 +65,24 @@ async function fetchWeather() {
                 const lat = pos.coords.latitude;
                 const lon = pos.coords.longitude;
                 const success = await fetchByEndpoint(`/weather?lat=${lat}&lon=${lon}`);
-                if (!success) {
-                    await fetchByEndpoint(`/weather?city=${encodeURIComponent(defaultCity)}`);
+                if (!success && savedCity) {
+                    await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
                 }
             },
             async (err) => {
-                console.warn("Geolocation positioning error / permission denied, using saved city:", err.message);
-                await fetchByEndpoint(`/weather?city=${encodeURIComponent(defaultCity)}`);
+                console.warn("Geolocation positioning error / permission denied, using saved location:", err.message);
+                if (savedCity) {
+                    await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
+                } else {
+                    await fetchByEndpoint(`/weather`);
+                }
             },
             { timeout: 10000, enableHighAccuracy: true }
         );
+    } else if (savedCity) {
+        await fetchByEndpoint(`/weather?city=${encodeURIComponent(savedCity)}`);
     } else {
-        await fetchByEndpoint(`/weather?city=${encodeURIComponent(defaultCity)}`);
+        await fetchByEndpoint(`/weather`);
     }
 }
 

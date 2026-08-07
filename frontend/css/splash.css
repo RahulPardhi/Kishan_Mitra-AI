@@ -5,25 +5,26 @@
 @import url('style.css');
 
 body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
-  position: relative;
-  padding: 0;
+  min-height: 100vh !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow-x: hidden !important;
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%) !important;
+  position: relative !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 body.dark {
-  background: linear-gradient(135deg, #09120B 0%, #101A12 50%, #19271B 100%);
+  background: linear-gradient(135deg, #09120B 0%, #101A12 50%, #19271B 100%) !important;
 }
 
 /* Dynamic background glowing circles */
 .background-circle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
   pointer-events: none;
 }
 
@@ -51,32 +52,40 @@ body.dark {
   animation: float 7s ease-in-out infinite alternate;
 }
 
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(3deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
 /* Splash Container */
-.splash-container, main.container {
-  width: 100%;
-  max-width: 440px;
-  text-align: center;
-  position: relative;
-  z-index: 10;
-  padding: 40px 24px;
-  background: transparent;
-  box-shadow: none;
-  border: none;
+.splash-container, main.splash-container, main.container {
+  width: 100% !important;
+  max-width: 460px !important;
+  min-height: auto !important;
+  text-align: center !important;
+  position: relative !important;
+  z-index: 10 !important;
+  padding: 40px 24px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  margin: 0 auto !important;
 }
 
 /* Emblem Logo */
 .logo-wrapper {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: center;
 }
 
 .logo-circle {
-  width: 130px;
-  height: 130px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,7 +96,7 @@ body.dark {
 }
 
 .logo-icon {
-  font-size: 60px;
+  font-size: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,35 +104,36 @@ body.dark {
 
 /* Typography */
 .title {
-  font-size: 42px;
-  font-weight: 800;
-  color: #FFFFFF;
-  line-height: 1.1;
-  letter-spacing: -0.5px;
+  font-size: 38px !important;
+  font-weight: 800 !important;
+  color: #FFFFFF !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.5px !important;
+  margin: 12px 0 6px !important;
 }
 
 .title span {
-  color: var(--accent);
-  text-shadow: 0 2px 10px rgba(255, 152, 0, 0.4);
+  color: #FF9800 !important;
+  text-shadow: 0 2px 10px rgba(255, 152, 0, 0.4) !important;
 }
 
 .subtitle {
-  margin-top: 14px;
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 18px;
-  font-weight: 600;
+  margin-top: 10px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
 }
 
 .subtitle.hindi {
-  margin-top: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  opacity: 0.85;
+  margin-top: 4px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  opacity: 0.9 !important;
 }
 
 /* Features Pills Grid */
 .features {
-  margin-top: 32px;
+  margin-top: 28px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -133,50 +143,50 @@ body.dark {
 .chip {
   padding: 10px 18px;
   border-radius: 30px;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: 14px;
-  transition: var(--transition);
+  transition: all 0.25s ease;
 }
 
 .chip:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.3) !important;
   transform: translateY(-2px);
 }
 
 /* Start Button */
 .start-btn {
-  margin-top: 48px;
-  width: 100%;
-  border: none;
-  padding: 16px 28px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  color: #FFFFFF;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  margin-top: 36px !important;
+  width: 100% !important;
+  border: none !important;
+  padding: 16px 28px !important;
+  border-radius: 50px !important;
+  background: linear-gradient(135deg, #FF9800, #F57C00) !important;
+  color: #FFFFFF !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
 }
 
 .start-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(255, 152, 0, 0.5);
-  background: linear-gradient(135deg, #FFA726, #F57C00);
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(255, 152, 0, 0.5) !important;
+  background: linear-gradient(135deg, #FFA726, #F57C00) !important;
 }
 
 .footer-text {
-  margin-top: 24px;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  font-weight: 500;
+  margin-top: 24px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
 }

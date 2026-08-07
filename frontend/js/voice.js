@@ -1,6 +1,6 @@
-// Apply Dark Mode on Page Load
-if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+// Apply User-Specific Dark Mode on Page Load
+if (window.KisanAPI) {
+    window.KisanAPI.applyTheme();
 }
 
 console.log("Voice Assistant Loaded 🎤");

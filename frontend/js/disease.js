@@ -1,6 +1,6 @@
-// Apply Dark Mode on Page Load
-if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+// Apply User-Specific Dark Mode on Page Load
+if (window.KisanAPI) {
+    window.KisanAPI.applyTheme();
 }
 
 // ================================
@@ -8,6 +8,14 @@ if (localStorage.getItem("darkMode") === "true") {
 // ================================
 
 const imageInput = document.getElementById("imageInput");
+const cameraInput = document.getElementById("cameraInput");
+const cameraBox = document.getElementById("cameraBox");
+const cameraModal = document.getElementById("cameraModal");
+const webcamVideo = document.getElementById("webcamVideo");
+const webcamCanvas = document.getElementById("webcamCanvas");
+const snapBtn = document.getElementById("snapBtn");
+const closeCameraBtn = document.getElementById("closeCameraBtn");
+
 const previewImage = document.getElementById("previewImage");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const resultCard = document.getElementById("resultCard");
@@ -15,6 +23,7 @@ const resultCard = document.getElementById("resultCard");
 let currentImageDataUrl = "";
 let lastAnalysisResult = null;
 let currentFileMeta = null;
+let activeMediaStream = null;
 
 // Hide result initially
 if (resultCard) resultCard.style.display = "none";
@@ -23,26 +32,97 @@ if (previewImage) {
     previewImage.style.display = "none";
 }
 
-// Image Preview Listener (In-memory preview for active upload session only)
-if (imageInput && previewImage) {
+// Handle selected file from upload or camera
+function handleSelectedImageFile(file) {
+    if (!file || !previewImage) return;
+    currentFileMeta = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        lastModified: file.lastModified
+    };
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        currentImageDataUrl = e.target.result;
+        previewImage.src = currentImageDataUrl;
+        previewImage.style.display = "block";
+        if (resultCard) resultCard.style.display = "none";
+    };
+    reader.readAsDataURL(file);
+}
+
+if (imageInput) {
     imageInput.addEventListener("change", function () {
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            currentFileMeta = {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                lastModified: file.lastModified
-            };
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                currentImageDataUrl = e.target.result;
-                previewImage.src = currentImageDataUrl;
-                previewImage.style.display = "block";
-                if (resultCard) resultCard.style.display = "none";
-            };
-            reader.readAsDataURL(file);
+        if (this.files && this.files[0]) handleSelectedImageFile(this.files[0]);
+    });
+}
+
+if (cameraInput) {
+    cameraInput.addEventListener("change", function () {
+        if (this.files && this.files[0]) handleSelectedImageFile(this.files[0]);
+    });
+}
+
+// Live Camera Stream Handlers
+function stopCameraStream() {
+    if (activeMediaStream) {
+        activeMediaStream.getTracks().forEach(track => track.stop());
+        activeMediaStream = null;
+    }
+    if (webcamVideo) webcamVideo.srcObject = null;
+    if (cameraModal) cameraModal.style.display = "none";
+}
+
+if (cameraBox) {
+    cameraBox.addEventListener("click", async function (e) {
+        if (e.target === cameraInput) return;
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }
+                });
+                activeMediaStream = stream;
+                if (webcamVideo) {
+                    webcamVideo.srcObject = stream;
+                }
+                if (cameraModal) cameraModal.style.display = "flex";
+            } catch (err) {
+                console.warn("Live webcam stream error, using native file picker:", err.message);
+                if (cameraInput) cameraInput.click();
+            }
+        } else if (cameraInput) {
+            cameraInput.click();
         }
+    });
+}
+
+if (closeCameraBtn) {
+    closeCameraBtn.addEventListener("click", stopCameraStream);
+}
+
+if (snapBtn && webcamVideo && webcamCanvas) {
+    snapBtn.addEventListener("click", function () {
+        if (!activeMediaStream || !webcamVideo.videoWidth) return;
+        webcamCanvas.width = webcamVideo.videoWidth;
+        webcamCanvas.height = webcamVideo.videoHeight;
+        const ctx = webcamCanvas.getContext("2d");
+        ctx.drawImage(webcamVideo, 0, 0, webcamCanvas.width, webcamCanvas.height);
+
+        currentImageDataUrl = webcamCanvas.toDataURL("image/jpeg", 0.9);
+        if (previewImage) {
+            previewImage.src = currentImageDataUrl;
+            previewImage.style.display = "block";
+        }
+        if (resultCard) resultCard.style.display = "none";
+
+        currentFileMeta = {
+            name: `camera-snap-${Date.now()}.jpg`,
+            size: currentImageDataUrl.length,
+            type: "image/jpeg",
+            lastModified: Date.now()
+        };
+
+        stopCameraStream();
     });
 }
 
@@ -312,7 +392,8 @@ function renderResult(analysis, imgUrl) {
 // Analyze Button Event Listener
 if (analyzeBtn) {
     analyzeBtn.addEventListener("click", async function () {
-        const imageFile = (imageInput && imageInput.files) ? imageInput.files[0] : null;
+        const cameraFile = (cameraInput && cameraInput.files) ? cameraInput.files[0] : null;
+        const imageFile = (imageInput && imageInput.files && imageInput.files[0]) ? imageInput.files[0] : cameraFile;
         const activeImg = currentImageDataUrl || localStorage.getItem("cropPreviewImage") || (previewImage ? previewImage.src : "");
 
         if (!imageFile && (!activeImg || activeImg === window.location.href)) {

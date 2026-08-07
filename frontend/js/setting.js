@@ -5,9 +5,9 @@ const notificationsToggle = document.getElementById("notifications");
 const logoutBtn = document.getElementById("logoutBtn");
 
 // Load saved settings
-if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
-    if (darkModeToggle) darkModeToggle.checked = true;
+const isUserDark = window.KisanAPI ? window.KisanAPI.applyTheme() : false;
+if (darkModeToggle) {
+    darkModeToggle.checked = isUserDark;
 }
 
 const savedLanguage = localStorage.getItem("language");
@@ -29,11 +29,22 @@ if (notificationsToggle) {
     });
 }
 
-// Dark Mode Toggle
+// User-Specific Dark Mode Toggle
 if (darkModeToggle) {
     darkModeToggle.addEventListener("change", () => {
-        document.body.classList.toggle("dark");
-        localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+        const isDark = darkModeToggle.checked;
+        if (window.KisanAPI) {
+            window.KisanAPI.setTheme(isDark);
+            window.KisanAPI.applyTheme();
+            if (window.KisanAPI.getToken()) {
+                window.KisanAPI.request("/auth/profile", {
+                    method: "PUT",
+                    body: JSON.stringify({ darkMode: isDark }),
+                }).catch((err) => console.warn("Dark mode profile sync error:", err));
+            }
+        } else {
+            document.body.classList.toggle("dark", isDark);
+        }
     });
 }
 

@@ -1,6 +1,6 @@
-// Apply Dark Mode on Page Load
-if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+// Apply User-Specific Dark Mode on Page Load
+if (window.KisanAPI) {
+    window.KisanAPI.applyTheme();
 }
 
 // ======================================
@@ -19,6 +19,45 @@ const languageSelect = document.getElementById("language");
 const profilePhoto = document.getElementById("profilePhoto");
 const photoInput = document.getElementById("photoInput");
 
+// Detect actual live location if missing
+async function detectAndSaveActualLocation() {
+    if (!locationInput) return;
+    if ("geolocation" in navigator && (!locationInput.value || locationInput.value === "Nagpur")) {
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                try {
+                    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+                    const data = await res.json();
+                    if (data) {
+                        const loc = data.city || data.locality || data.localityInfo?.informative?.[0]?.name || data.principalSubdivision;
+                        if (loc) {
+                            locationInput.value = loc;
+                            localStorage.setItem("profileLocation", loc);
+                            let currentUser = window.KisanAPI ? window.KisanAPI.getUser() : null;
+                            if (currentUser) {
+                                currentUser.location = loc;
+                                window.KisanAPI.setUser(currentUser);
+                            }
+                            if (window.KisanAPI && window.KisanAPI.getToken()) {
+                                window.KisanAPI.request("/auth/profile", {
+                                    method: "PUT",
+                                    body: JSON.stringify({ location: loc }),
+                                }).catch((e) => console.warn("Location sync note:", e));
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Reverse geocode error in profile:", e.message);
+                }
+            },
+            (err) => console.warn("Profile location detection skipped/denied:", err.message),
+            { timeout: 8000 }
+        );
+    }
+}
+
 // Load Profile Data from Backend API or localStorage
 async function loadProfile() {
     let user = window.KisanAPI ? window.KisanAPI.getUser() : null;
@@ -35,7 +74,7 @@ async function loadProfile() {
         if (userNameEl) userNameEl.innerText = user.name || "Kisan Mitra User";
         if (emailInput) emailInput.value = user.email || "";
         if (mobileInput) mobileInput.value = user.mobile || "";
-        if (locationInput) locationInput.value = user.location || "";
+        if (locationInput) locationInput.value = (user.location && user.location !== "Nagpur") ? user.location : (localStorage.getItem("profileLocation") || "");
         if (languageSelect) languageSelect.value = user.language || "en";
     } else {
         const storedName = localStorage.getItem("userName");
@@ -47,7 +86,7 @@ async function loadProfile() {
         if (userNameEl) userNameEl.innerText = storedName || "Kisan Mitra User";
         if (emailInput) emailInput.value = storedEmail || "";
         if (mobileInput) mobileInput.value = storedMobile || "";
-        if (locationInput) locationInput.value = storedLocation || "";
+        if (locationInput) locationInput.value = (storedLocation && storedLocation !== "Nagpur") ? storedLocation : "";
         if (languageSelect) languageSelect.value = storedLang || "en";
     }
 
@@ -68,7 +107,7 @@ async function loadProfile() {
                 if (userNameEl) userNameEl.innerText = remoteUser.name || "Kisan Mitra User";
                 if (emailInput) emailInput.value = remoteUser.email || "";
                 if (mobileInput) mobileInput.value = remoteUser.mobile || "";
-                if (locationInput) locationInput.value = remoteUser.location || "";
+                if (locationInput) locationInput.value = (remoteUser.location && remoteUser.location !== "Nagpur") ? remoteUser.location : (localStorage.getItem("profileLocation") || "");
                 if (languageSelect) languageSelect.value = remoteUser.language || "en";
 
                 const activeAvatar = remoteUser.avatar || cachedAvatar;
@@ -81,6 +120,8 @@ async function loadProfile() {
             console.warn("Could not fetch remote profile, keeping local values:", e);
         }
     }
+
+    detectAndSaveActualLocation();
 }
 
 window.addEventListener("DOMContentLoaded", loadProfile);

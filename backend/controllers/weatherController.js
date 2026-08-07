@@ -21,11 +21,11 @@ const getWeather = async (req, res) => {
     try {
         const reqLat = parseFloat(req.query.lat);
         const reqLon = parseFloat(req.query.lon);
-        const queryCity = req.query.city || "Nagpur";
+        const queryCity = req.query.city || "";
 
         let latitude = null;
         let longitude = null;
-        let cityName = queryCity;
+        let cityName = queryCity || "Your Location";
 
         let weatherData = null;
 
@@ -39,13 +39,13 @@ const getWeather = async (req, res) => {
                     const reverseGeoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
                     const reverseRes = await fetchJson(reverseGeoUrl);
                     if (reverseRes) {
-                        const loc = reverseRes.city || reverseRes.locality || reverseRes.principalSubdivision || reverseRes.countryName;
+                        const loc = reverseRes.city || reverseRes.locality || reverseRes.localityInfo?.informative?.[0]?.name || reverseRes.principalSubdivision;
                         if (loc) cityName = loc;
                     }
                 } catch (rErr) {
                     console.warn("Reverse geocoding warning:", rErr.message);
                 }
-            } else {
+            } else if (queryCity) {
                 // Geocoding via Open-Meteo
                 const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(queryCity)}&count=1&language=en&format=json`;
                 const geoRes = await fetchJson(geoUrl);

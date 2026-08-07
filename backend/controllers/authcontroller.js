@@ -10,20 +10,58 @@ const generateToken = (payload) => {
 
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password, mobile, location, language } = req.body;
+        const { name, email, password, mobile, location, language, darkMode } = req.body;
 
-        if (!name || !email || !password) {
+        const trimmedName = (name || "").trim();
+        const normalizedEmail = (email || "").toLowerCase().trim();
+        const trimmedMobile = (mobile || "").trim();
+        const trimmedPassword = (password || "").trim();
+
+        if (!trimmedName || !normalizedEmail || !trimmedPassword) {
             return res.status(400).json({
                 success: false,
-                message: "Please fill all required fields (name, email, password)",
+                message: "Please fill all required fields (Name, Email, Password).",
             });
         }
 
-        const normalizedEmail = email.toLowerCase().trim();
+        // Validate Name (alphabetic and spaces only, min length 2)
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!nameRegex.test(trimmedName) || trimmedName.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: "Name can only contain alphabetic characters and spaces (at least 2 characters).",
+            });
+        }
+
+        // Validate Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid email address.",
+            });
+        }
+
+        // Validate Mobile (must be exactly 10 digits)
+        const mobileRegex = /^\d{10}$/;
+        if (!trimmedMobile || !mobileRegex.test(trimmedMobile)) {
+            return res.status(400).json({
+                success: false,
+                message: "Mobile number must consist of exactly 10 numeric digits.",
+            });
+        }
+
+        // Validate Password (min 6 chars)
+        if (trimmedPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters long.",
+            });
+        }
 
         // Hash Password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(trimmedPassword, salt);
 
         let userObj = null;
 
@@ -32,17 +70,18 @@ const registerUser = async (req, res) => {
             if (existingUser) {
                 return res.status(400).json({
                     success: false,
-                    message: "User already exists with this email",
+                    message: "User already exists with this email address.",
                 });
             }
 
             const dbUser = await User.create({
-                name: name.trim(),
+                name: trimmedName,
                 email: normalizedEmail,
                 password: hashedPassword,
-                mobile: mobile || "",
-                location: location || "Nagpur",
+                mobile: trimmedMobile,
+                location: location || "",
                 language: language || "en",
+                darkMode: darkMode === true,
             });
 
             userObj = {
@@ -54,12 +93,20 @@ const registerUser = async (req, res) => {
                 language: dbUser.language,
                 avatar: dbUser.avatar,
                 notificationsEnabled: dbUser.notificationsEnabled,
+                darkMode: dbUser.darkMode,
             };
         } catch (dbError) {
             console.error("Registration database error:", dbError.message);
+            if (dbError.name === "ValidationError") {
+                const firstErr = Object.values(dbError.errors)[0]?.message || "Validation failed";
+                return res.status(400).json({
+                    success: false,
+                    message: firstErr,
+                });
+            }
             return res.status(503).json({
                 success: false,
-                message: "Unable to save your account. Please verify the database connection and try again.",
+                message: "Unable to save your account. Please verify database connection and try again.",
             });
         }
 
@@ -71,6 +118,7 @@ const registerUser = async (req, res) => {
             location: userObj.location,
             language: userObj.language,
             avatar: userObj.avatar,
+            darkMode: userObj.darkMode,
         });
 
         res.status(201).json({
@@ -91,72 +139,62 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
+        const normalizedEmail = (email || "").toLowerCase().trim();
+        const trimmedPassword = (password || "").trim();
+
+        if (!normalizedEmail || !trimmedPassword) {
             return res.status(400).json({
                 success: false,
-                message: "Please enter both Email and Password",
+                message: "Please enter both Email and Password.",
             });
         }
 
-        const normalizedEmail = email.toLowerCase().trim();
-        let foundUser = null;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid email address.",
+            });
+        }
+
+        let dbUser = null;
         let isMatch = false;
 
         try {
-            let dbUser = await User.findOne({ email: normalizedEmail });
+            dbUser = await User.findOne({ email: normalizedEmail });
             if (!dbUser) {
-                // Save user to database upon login if record does not exist
-                const salt = await bcrypt.genSalt(10);
-                const hashedPassword = await bcrypt.hash(password, salt);
-                const defaultName = req.body.name || normalizedEmail.split("@")[0];
-                dbUser = await User.create({
-                    name: defaultName,
-                    email: normalizedEmail,
-                    password: hashedPassword,
-                    mobile: req.body.mobile || "",
-                    location: req.body.location || "Nagpur",
-                    language: req.body.language || "en",
+                return res.status(401).json({
+                    success: false,
+                    message: "User account not found. Please register first.",
                 });
-                isMatch = true;
-            } else {
-                isMatch = await bcrypt.compare(password, dbUser.password);
-                if (isMatch) {
-                    let dirty = false;
-                    if (req.body.name && req.body.name !== dbUser.name) { dbUser.name = req.body.name; dirty = true; }
-                    if (req.body.mobile !== undefined && req.body.mobile !== dbUser.mobile) { dbUser.mobile = req.body.mobile; dirty = true; }
-                    if (req.body.location !== undefined && req.body.location !== dbUser.location) { dbUser.location = req.body.location; dirty = true; }
-                    if (req.body.language && req.body.language !== dbUser.language) { dbUser.language = req.body.language; dirty = true; }
-                    if (dirty) await dbUser.save();
-                }
             }
 
-            if (dbUser && isMatch) {
-                foundUser = {
-                    _id: dbUser._id,
-                    name: dbUser.name,
-                    email: dbUser.email,
-                    password: dbUser.password,
-                    mobile: dbUser.mobile,
-                    location: dbUser.location,
-                    language: dbUser.language,
-                    avatar: dbUser.avatar,
-                    notificationsEnabled: dbUser.notificationsEnabled,
-                };
+            isMatch = await bcrypt.compare(trimmedPassword, dbUser.password);
+            if (!isMatch) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Invalid email or password.",
+                });
             }
         } catch (dbErr) {
             console.error("Login database error:", dbErr.message);
             return res.status(503).json({
                 success: false,
-                message: "Unable to access accounts. Please verify the database connection and try again.",
+                message: "Unable to access account database. Please verify the database connection.",
             });
         }
 
-        if (!foundUser || !isMatch) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid email or password",
-            });
-        }
+        const foundUser = {
+            _id: dbUser._id,
+            name: dbUser.name,
+            email: dbUser.email,
+            mobile: dbUser.mobile,
+            location: dbUser.location,
+            language: dbUser.language,
+            avatar: dbUser.avatar,
+            notificationsEnabled: dbUser.notificationsEnabled,
+            darkMode: dbUser.darkMode || false,
+        };
 
         const token = generateToken({
             id: foundUser._id,
@@ -166,16 +204,14 @@ const loginUser = async (req, res) => {
             location: foundUser.location,
             language: foundUser.language,
             avatar: foundUser.avatar,
+            darkMode: foundUser.darkMode,
         });
-
-        const responseUser = { ...foundUser };
-        delete responseUser.password;
 
         res.json({
             success: true,
             message: "Login successful 🚀",
             token,
-            user: responseUser,
+            user: foundUser,
         });
     } catch (error) {
         res.status(500).json({
@@ -203,7 +239,7 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { name, email, mobile, location, language, avatar, notificationsEnabled } = req.body;
+        const { name, email, mobile, location, language, avatar, notificationsEnabled, darkMode } = req.body;
 
         let updatedUser = null;
 
@@ -223,6 +259,7 @@ const updateProfile = async (req, res) => {
             if (language) dbUser.language = language;
             if (avatar !== undefined) dbUser.avatar = avatar;
             if (notificationsEnabled !== undefined) dbUser.notificationsEnabled = notificationsEnabled;
+            if (darkMode !== undefined) dbUser.darkMode = darkMode;
 
             await dbUser.save();
             updatedUser = {
@@ -234,6 +271,7 @@ const updateProfile = async (req, res) => {
                 language: dbUser.language,
                 avatar: dbUser.avatar,
                 notificationsEnabled: dbUser.notificationsEnabled,
+                darkMode: dbUser.darkMode,
             };
         } catch (dbErr) {
             console.error("Profile update database error:", dbErr.message);
@@ -262,7 +300,7 @@ const getProfileAiAdvisory = async (req, res) => {
     try {
         const user = req.user || {};
         const userName = user.name || "Farmer";
-        const userLocation = user.location || "Nagpur, India";
+        const userLocation = user.location || "India";
         const userLang = user.language || "en";
 
         let advisory = null;

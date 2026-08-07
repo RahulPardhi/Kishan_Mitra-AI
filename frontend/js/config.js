@@ -1,6 +1,10 @@
 // Kisan Mitra AI - Central Frontend API Configuration
 const API_BASE_URL = (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.startsWith("http"))
-    ? (window.location.origin.includes("onrender.com") ? "https://kishan-mitra-ai.onrender.com/api" : `${window.location.origin}/api`)
+    ? (window.location.origin.includes("onrender.com")
+        ? "https://kishan-mitra-ai.onrender.com/api"
+        : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+            ? `http://${window.location.hostname}:5000/api`
+            : `${window.location.origin}/api`)
     : "http://localhost:5000/api";
 const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
 
@@ -64,20 +68,9 @@ const KisanAPI = {
     getToken: () => localStorage.getItem("token") || "",
     setToken: (token) => safeSetItem("token", token),
 
-    getRegisteredUsers: () => {
-        try {
-            const users = JSON.parse(localStorage.getItem("registeredUsers"));
-            if (Array.isArray(users)) return users;
-        } catch (e) {}
-        return [];
-    },
+    getRegisteredUsers: () => [],
 
-    findRegisteredUser: (email) => {
-        if (!email) return null;
-        const normalized = email.trim().toLowerCase();
-        const users = KisanAPI.getRegisteredUsers();
-        return users.find(u => u.email && u.email.trim().toLowerCase() === normalized) || null;
-    },
+    findRegisteredUser: () => null,
 
     registerLocalUser: (userObj) => {
         if (!userObj || !userObj.email) return;
@@ -89,11 +82,12 @@ const KisanAPI = {
             name: userObj.name || userObj.email.split("@")[0],
             email: normalized,
             password: userObj.password || "",
-            mobile: userObj.mobile || "+91 9876543210",
-            location: userObj.location || "Nagpur",
+            mobile: userObj.mobile || "",
+            location: userObj.location || "",
             language: userObj.language || "en",
             avatar: userObj.avatar || DEFAULT_AVATAR,
-            notificationsEnabled: userObj.notificationsEnabled !== false
+            notificationsEnabled: userObj.notificationsEnabled !== false,
+            darkMode: userObj.darkMode === true
         };
         if (existingIdx >= 0) {
             users[existingIdx] = { ...users[existingIdx], ...newUser };
@@ -127,16 +121,59 @@ const KisanAPI = {
                 safeSetItem("user", JSON.stringify(user));
                 if (user.name) safeSetItem("userName", user.name);
                 if (user.email) safeSetItem("profileEmail", user.email);
-                if (user.mobile) safeSetItem("profileMobile", user.mobile);
-                if (user.location) safeSetItem("profileLocation", user.location);
+                if (user.mobile !== undefined) safeSetItem("profileMobile", user.mobile);
+                if (user.location !== undefined) safeSetItem("profileLocation", user.location);
                 if (user.language) safeSetItem("profileLanguage", user.language);
+                if (typeof user.darkMode === "boolean") KisanAPI.setTheme(user.darkMode, user);
             } catch (err) {
                 console.warn("setUser encountered non-fatal storage warning:", err.message);
             }
         }
     },
+
+    getThemeKey: (user) => {
+        const u = user || KisanAPI.getUser();
+        const email = (u?.email || localStorage.getItem("profileEmail") || "").trim().toLowerCase();
+        return email ? `darkMode:${email}` : "";
+    },
+
+    getTheme: (user) => {
+        const u = user || KisanAPI.getUser();
+        if (!u || (!u.email && !localStorage.getItem("profileEmail"))) return false; // Default light for unauthenticated / splash
+        if (typeof u.darkMode === "boolean") return u.darkMode;
+        const key = KisanAPI.getThemeKey(u);
+        if (key && localStorage.getItem(key) !== null) {
+            return localStorage.getItem(key) === "true";
+        }
+        return false;
+    },
+
+    setTheme: (isDark, user) => {
+        const u = user || KisanAPI.getUser();
+        if (u) u.darkMode = isDark;
+        const key = KisanAPI.getThemeKey(u);
+        if (key) safeSetItem(key, isDark ? "true" : "false");
+        try {
+            const cachedUser = JSON.parse(localStorage.getItem("user") || "null");
+            if (cachedUser) {
+                cachedUser.darkMode = isDark;
+                safeSetItem("user", JSON.stringify(cachedUser));
+            }
+        } catch (e) {}
+    },
+
+    applyTheme: (user) => {
+        const isDark = KisanAPI.getTheme(user);
+        if (isDark) {
+            document.body.classList.add("dark");
+        } else {
+            document.body.classList.remove("dark");
+        }
+        return isDark;
+    },
     
     clearAuth: () => {
+        document.body.classList.remove("dark");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("userName");

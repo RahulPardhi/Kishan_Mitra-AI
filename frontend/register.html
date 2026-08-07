@@ -33,31 +33,35 @@
 
             <!-- Full Name -->
             <label data-key="fullName">Full Name</label>
-            <div class="input-box">
+            <div class="input-box" id="regNameBox">
                 <i class="fa-solid fa-user"></i>
                 <input type="text" id="regName" data-key-placeholder="enterFullName" placeholder="Enter full name">
             </div>
+            <small class="error-text" id="regNameError"></small>
 
             <!-- Email -->
             <label data-key="emailAddress">Email Address</label>
-            <div class="input-box">
+            <div class="input-box" id="regEmailBox">
                 <i class="fa-solid fa-envelope"></i>
                 <input type="email" id="regEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
             </div>
+            <small class="error-text" id="regEmailError"></small>
 
             <!-- Mobile -->
             <label data-key="mobileNumber">Mobile Number</label>
-            <div class="input-box">
+            <div class="input-box" id="regMobileBox">
                 <i class="fa-solid fa-phone"></i>
-                <input type="tel" id="regMobile" data-key-placeholder="enterMobile" placeholder="Enter mobile number">
+                <input type="tel" id="regMobile" data-key-placeholder="enterMobile" placeholder="Enter 10-digit mobile number" maxlength="10">
             </div>
+            <small class="error-text" id="regMobileError"></small>
 
             <!-- Password -->
             <label data-key="password">Password</label>
-            <div class="input-box">
+            <div class="input-box" id="regPasswordBox">
                 <i class="fa-solid fa-lock"></i>
-                <input id="regPassword" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
+                <input id="regPassword" type="password" data-key-placeholder="enterPassword" placeholder="Enter password (min 6 characters)">
             </div>
+            <small class="error-text" id="regPasswordError"></small>
 
             <!-- Register Button -->
             <button class="login-btn" id="regBtn" data-key="register" style="margin-top: 18px;">
@@ -76,19 +80,148 @@
 
     <script src="js/config.js"></script>
     <script>
-        // Dark Mode
-        if (localStorage.getItem("darkMode") === "true") {
-            document.body.classList.add("dark");
+        if (window.KisanAPI) window.KisanAPI.applyTheme();
+
+        const nameInput = document.getElementById("regName");
+        const emailInput = document.getElementById("regEmail");
+        const mobileInput = document.getElementById("regMobile");
+        const passwordInput = document.getElementById("regPassword");
+
+        const nameBox = document.getElementById("regNameBox");
+        const emailBox = document.getElementById("regEmailBox");
+        const mobileBox = document.getElementById("regMobileBox");
+        const passwordBox = document.getElementById("regPasswordBox");
+
+        const nameErr = document.getElementById("regNameError");
+        const emailErr = document.getElementById("regEmailError");
+        const mobileErr = document.getElementById("regMobileError");
+        const passwordErr = document.getElementById("regPasswordError");
+
+        function showError(errEl, boxEl, msg) {
+            if (errEl) {
+                errEl.textContent = msg;
+                errEl.classList.add("show");
+            }
+            if (boxEl) {
+                boxEl.classList.add("has-error");
+            }
         }
+
+        function clearError(errEl, boxEl) {
+            if (errEl) {
+                errEl.textContent = "";
+                errEl.classList.remove("show");
+            }
+            if (boxEl) {
+                boxEl.classList.remove("has-error");
+            }
+        }
+
+        function clearAllErrors() {
+            clearError(nameErr, nameBox);
+            clearError(emailErr, emailBox);
+            clearError(mobileErr, mobileBox);
+            clearError(passwordErr, passwordBox);
+        }
+
+        // Real-time input validation & character restriction
+        if (nameInput) {
+            nameInput.addEventListener("input", (e) => {
+                const val = e.target.value;
+                if (/[^A-Za-z\s]/.test(val)) {
+                    e.target.value = val.replace(/[^A-Za-z\s]/g, "");
+                    showError(nameErr, nameBox, "Only alphabetic characters and spaces are allowed in Name.");
+                } else {
+                    clearError(nameErr, nameBox);
+                }
+            });
+        }
+
+        if (emailInput) {
+            emailInput.addEventListener("input", () => {
+                clearError(emailErr, emailBox);
+            });
+            emailInput.addEventListener("blur", () => {
+                const val = emailInput.value.trim();
+                if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                    showError(emailErr, emailBox, "Please enter a valid email format (e.g. name@example.com).");
+                }
+            });
+        }
+
+        if (mobileInput) {
+            mobileInput.addEventListener("input", (e) => {
+                const val = e.target.value;
+                if (/[^\d]/.test(val)) {
+                    e.target.value = val.replace(/[^\d]/g, "");
+                    showError(mobileErr, mobileBox, "Only numeric digits are allowed in Mobile Number.");
+                } else {
+                    clearError(mobileErr, mobileBox);
+                }
+            });
+            mobileInput.addEventListener("blur", () => {
+                const val = mobileInput.value.trim();
+                if (val && val.length !== 10) {
+                    showError(mobileErr, mobileBox, "Mobile number must be exactly 10 numeric digits.");
+                }
+            });
+        }
+
+        if (passwordInput) {
+            passwordInput.addEventListener("input", () => {
+                clearError(passwordErr, passwordBox);
+            });
+        }
+
         document.getElementById("regBtn").addEventListener("click", async (e) => {
             e.preventDefault();
-            const name = document.getElementById("regName").value.trim();
-            const email = document.getElementById("regEmail").value.trim();
-            const mobile = document.getElementById("regMobile") ? document.getElementById("regMobile").value.trim() : "";
-            const pass = document.getElementById("regPassword").value.trim();
+            clearAllErrors();
 
-            if (!name || !email || !pass) {
-                alert("Please fill all required fields.");
+            const name = nameInput ? nameInput.value.trim() : "";
+            const email = emailInput ? emailInput.value.trim() : "";
+            const mobile = mobileInput ? mobileInput.value.trim() : "";
+            const pass = passwordInput ? passwordInput.value.trim() : "";
+
+            let hasError = false;
+
+            // Name validation
+            if (!name) {
+                showError(nameErr, nameBox, "Full Name is required.");
+                hasError = true;
+            } else if (!/^[A-Za-z\s]+$/.test(name) || name.length < 2) {
+                showError(nameErr, nameBox, "Name must contain only alphabetic characters and spaces (at least 2 letters).");
+                hasError = true;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email) {
+                showError(emailErr, emailBox, "Email Address is required.");
+                hasError = true;
+            } else if (!emailRegex.test(email)) {
+                showError(emailErr, emailBox, "Please enter a valid email format.");
+                hasError = true;
+            }
+
+            // Mobile validation
+            if (!mobile) {
+                showError(mobileErr, mobileBox, "Mobile Number is required.");
+                hasError = true;
+            } else if (!/^\d{10}$/.test(mobile)) {
+                showError(mobileErr, mobileBox, "Mobile Number must be exactly 10 numeric digits.");
+                hasError = true;
+            }
+
+            // Password validation
+            if (!pass) {
+                showError(passwordErr, passwordBox, "Password is required.");
+                hasError = true;
+            } else if (pass.length < 6) {
+                showError(passwordErr, passwordBox, "Password must be at least 6 characters long.");
+                hasError = true;
+            }
+
+            if (hasError) {
                 return;
             }
 
@@ -96,76 +229,50 @@
             regBtn.disabled = true;
             regBtn.innerText = "Registering...";
 
+            let detectedLocation = localStorage.getItem("profileLocation") || "";
+
             try {
-                if (window.KisanAPI) {
-                    const existingUser = window.KisanAPI.findRegisteredUser(email);
-                    if (existingUser) {
-                        alert("User already exists with this email address.");
-                        return;
-                    }
-
-                    try {
-                        const res = await window.KisanAPI.request("/auth/register", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                name,
-                                email,
-                                mobile,
-                                password: pass,
-                                language: localStorage.getItem("language") || "en",
-                            }),
-                        });
-
-                        if (res && res.success) {
-                            window.KisanAPI.registerLocalUser({
-                                name,
-                                email,
-                                password: pass,
-                                mobile,
-                                location: "Nagpur",
-                                language: localStorage.getItem("language") || "en",
-                                ...(res.user || {})
-                            });
-                            window.KisanAPI.setToken(res.token);
-                            window.KisanAPI.setUser(res.user);
-                            alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
-                            window.location.href = "dashboard.html";
-                            return;
-                        }
-                        throw new Error(res?.message || "Registration failed. Please try again.");
-                    } catch (apiErr) {
-                        console.warn("Registration API attempt note:", apiErr.message);
-                        if (window.KisanAPI && !window.KisanAPI.isBackendUnreachable(apiErr)) {
-                            throw apiErr;
-                        }
-                    }
+                if (!window.KisanAPI) {
+                    throw new Error("KisanAPI configuration is missing.");
                 }
 
-                // Fallback for offline mode (if backend network call fails)
-                const localUser = {
-                    _id: "local_" + Date.now(),
-                    name: name,
-                    email: email,
-                    password: pass,
-                    mobile: mobile || "+91 9876543210",
-                    location: "Nagpur",
-                    language: localStorage.getItem("language") || "en",
-                    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-                    notificationsEnabled: true
-                };
-                if (window.KisanAPI) {
-                    window.KisanAPI.registerLocalUser(localUser);
-                    window.KisanAPI.setToken("offline_token_" + Date.now());
-                    window.KisanAPI.setUser(localUser);
-                } else {
-                    localStorage.setItem("profileEmail", email);
-                    localStorage.setItem("userName", name);
-                    if (mobile) localStorage.setItem("profileMobile", mobile);
+                const res = await window.KisanAPI.request("/auth/register", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        mobile,
+                        password: pass,
+                        location: detectedLocation,
+                        language: localStorage.getItem("language") || "en",
+                    }),
+                });
+
+                if (res && res.success) {
+                    window.KisanAPI.setToken(res.token);
+                    window.KisanAPI.setUser(res.user);
+                    alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
+                    window.location.href = "dashboard.html";
+                    return;
                 }
-                alert("Registration Successful! Welcome to Kisan Mitra AI 🌾");
-                window.location.href = "dashboard.html";
+
+                throw new Error(res?.message || "Registration failed. Please try again.");
             } catch (err) {
-                alert(err.message || "Registration failed. Please try again.");
+                console.error("Registration error:", err);
+                const errMsg = err.message || "Registration failed. Please try again.";
+
+                if (window.KisanAPI && window.KisanAPI.isBackendUnreachable(err)) {
+                    alert("Unable to connect to the registration server. Please make sure the backend server is running.");
+                } else {
+                    alert(errMsg);
+                    if (errMsg.toLowerCase().includes("email")) {
+                        showError(emailErr, emailBox, errMsg);
+                    } else if (errMsg.toLowerCase().includes("name")) {
+                        showError(nameErr, nameBox, errMsg);
+                    } else if (errMsg.toLowerCase().includes("mobile")) {
+                        showError(mobileErr, mobileBox, errMsg);
+                    }
+                }
             } finally {
                 regBtn.disabled = false;
                 regBtn.innerText = "Register";
