@@ -183,6 +183,6 @@ function updateGreeting() {
 }
 
 loadUserData();
-loadLiveWeather();
+loadLiveWeatherSnippet();
 updateGreeting();
 window.addEventListener("languageChanged", updateGreeting);
