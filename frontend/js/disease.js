@@ -356,7 +356,7 @@ function renderResult(analysis, imgUrl) {
     // Determine clean image URL priority: Data URL > HTTP relative URL > DOM Image Src
     let displayImg = currentImageDataUrl;
     if (!displayImg && imgUrl) {
-        displayImg = (imgUrl.startsWith("http") || imgUrl.startsWith("data:")) ? imgUrl : `http://localhost:5000${imgUrl}`;
+        displayImg = (imgUrl.startsWith("http") || imgUrl.startsWith("data:")) ? imgUrl : `${window.location.origin}${imgUrl}`;
     }
     if (!displayImg && previewImage && previewImage.src) {
         displayImg = previewImage.src;
