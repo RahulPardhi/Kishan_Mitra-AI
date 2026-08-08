@@ -151,10 +151,10 @@ const KisanAPI = {
     isAuthPage: () => {
         if (typeof window === "undefined" || !window.location) return false;
         const path = (window.location.pathname || "").toLowerCase();
-        const isAuthUrl = path.endsWith("login.html") || path.endsWith("register.html") ||
-                          path.endsWith("/login") || path.endsWith("/register") ||
-                          path.includes("login.html") || path.includes("register.html");
-        const isAuthClass = document.body && document.body.classList && document.body.classList.contains("auth-page");
+        const file = path.split("/").pop() || "";
+        const isAuthUrl = file === "login.html" || file === "register.html" || file === "login" || file === "register";
+        const isAuthClass = (document.body && document.body.classList && document.body.classList.contains("auth-page")) ||
+                            (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains("auth-page"));
         return isAuthUrl || isAuthClass;
     },
 
@@ -195,14 +195,17 @@ const KisanAPI = {
 
     applyTheme: (user) => {
         if (KisanAPI.isAuthPage()) {
-            document.body.classList.remove("dark");
+            if (document.body) document.body.classList.remove("dark");
+            if (document.documentElement) document.documentElement.classList.remove("dark");
             return false;
         }
         const isDark = KisanAPI.getTheme(user);
         if (isDark) {
-            document.body.classList.add("dark");
+            if (document.body) document.body.classList.add("dark");
+            if (document.documentElement) document.documentElement.classList.add("dark");
         } else {
-            document.body.classList.remove("dark");
+            if (document.body) document.body.classList.remove("dark");
+            if (document.documentElement) document.documentElement.classList.remove("dark");
         }
         return isDark;
     },

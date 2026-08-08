@@ -57,9 +57,28 @@ if (bell) {
 }
 
 // Dynamic Greeting & User Name
-async function loadUserData() {
+function updateHeadingName(name) {
     const nameHeading = document.getElementById("userNameHeading");
-    let name = localStorage.getItem("userName");
+    if (nameHeading && name) {
+        nameHeading.innerText = name;
+    }
+}
+
+// Immediately display stored user name synchronously on load
+(() => {
+    const cachedUser = window.KisanAPI ? window.KisanAPI.getUser() : null;
+    const initialName = cachedUser?.name || localStorage.getItem("userName") || "";
+    if (initialName) {
+        updateHeadingName(initialName);
+    }
+})();
+
+async function loadUserData() {
+    const cachedUser = window.KisanAPI ? window.KisanAPI.getUser() : null;
+    let name = cachedUser?.name || localStorage.getItem("userName") || "";
+    if (name) {
+        updateHeadingName(name);
+    }
 
     if (window.KisanAPI && window.KisanAPI.getToken()) {
         try {
@@ -67,15 +86,13 @@ async function loadUserData() {
             if (res.success && res.user) {
                 window.KisanAPI.setUser(res.user);
                 window.KisanAPI.applyTheme();
-                name = res.user.name;
+                if (res.user.name) {
+                    updateHeadingName(res.user.name);
+                }
             }
         } catch (e) {
             console.warn("Could not fetch profile, using cached user name.");
         }
-    }
-
-    if (nameHeading && name) {
-        nameHeading.innerText = name;
     }
 }
 
