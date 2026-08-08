@@ -234,25 +234,45 @@ body.dark .weather-card {
 #languageCard .icon { background: #E0F2F1; color: #00695C; }
 #languageCard:hover { border-color: #80CBC4; }
 
-body.dark .feature-card {
-  background: var(--bg-surface) !important;
-  border-color: var(--border-light) !important;
+/* Dark Mode Styles for Dashboard */
+body.dark, html.dark {
+  background-color: #101712 !important;
+  color: #F0F4F1 !important;
 }
 
-body.dark .feature-card h3 {
-  color: var(--text-main) !important;
+body.dark .app-container, html.dark .app-container,
+body.dark .container, html.dark .container {
+  background-color: #1B261D !important;
+  background: #1B261D !important;
+  color: #F0F4F1 !important;
 }
 
-body.dark .feature-card p {
-  color: var(--text-muted) !important;
+body.dark .feature-card, html.dark .feature-card,
+body.dark #diseaseCard, html.dark #diseaseCard,
+body.dark #chatCard, html.dark #chatCard,
+body.dark #soilCard, html.dark #soilCard,
+body.dark #weatherCard, html.dark #weatherCard,
+body.dark #voiceCard, html.dark #voiceCard,
+body.dark #languageCard, html.dark #languageCard {
+  background: #1B261D !important;
+  background-color: #1B261D !important;
+  border-color: #253828 !important;
 }
 
-body.dark #diseaseCard .icon { background: rgba(46, 125, 50, 0.2); color: #81C784; }
-body.dark #chatCard .icon { background: rgba(25, 118, 210, 0.2); color: #64B5F6; }
-body.dark #soilCard .icon { background: rgba(245, 127, 23, 0.2); color: #FFD54F; }
-body.dark #weatherCard .icon { background: rgba(123, 31, 162, 0.2); color: #BA68C8; }
-body.dark #voiceCard .icon { background: rgba(198, 40, 40, 0.2); color: #E57373; }
-body.dark #languageCard .icon { background: rgba(0, 105, 92, 0.2); color: #4DB6AC; }
+body.dark .feature-card h3, html.dark .feature-card h3 {
+  color: #F0F4F1 !important;
+}
+
+body.dark .feature-card p, html.dark .feature-card p {
+  color: #9EAEA1 !important;
+}
+
+body.dark #diseaseCard .icon, html.dark #diseaseCard .icon { background: rgba(46, 125, 50, 0.3) !important; color: #81C784 !important; }
+body.dark #chatCard .icon, html.dark #chatCard .icon { background: rgba(25, 118, 210, 0.3) !important; color: #64B5F6 !important; }
+body.dark #soilCard .icon, html.dark #soilCard .icon { background: rgba(245, 127, 23, 0.3) !important; color: #FFD54F !important; }
+body.dark #weatherCard .icon, html.dark #weatherCard .icon { background: rgba(123, 31, 162, 0.3) !important; color: #BA68C8 !important; }
+body.dark #voiceCard .icon, html.dark #voiceCard .icon { background: rgba(198, 40, 40, 0.3) !important; color: #E57373 !important; }
+body.dark #languageCard .icon, html.dark #languageCard .icon { background: rgba(0, 105, 92, 0.3) !important; color: #4DB6AC !important; }
 
 /* Farming Tip Section */
 .tip-card {
@@ -292,41 +312,57 @@ body.dark #languageCard .icon { background: rgba(0, 105, 92, 0.2); color: #4DB6A
   line-height: 1.4;
 }
 
-body.dark .tip-card {
-  background: rgba(255, 152, 0, 0.08);
-  border-color: rgba(255, 152, 0, 0.3);
+body.dark .tip-card, html.dark .tip-card {
+  background: rgba(255, 152, 0, 0.08) !important;
+  border-color: rgba(255, 152, 0, 0.3) !important;
 }
 
-body.dark .tip-icon {
-  background: rgba(255, 152, 0, 0.2);
-  color: #FFB74D;
+body.dark .tip-icon, html.dark .tip-icon {
+  background: rgba(255, 152, 0, 0.25) !important;
+  color: #FFB74D !important;
 }
 
-body.dark header h2 {
-  color: #81C784;
+body.dark header h2, html.dark header h2 {
+  color: #81C784 !important;
 }
 
-body.dark header .notification {
-  background: var(--bg-surface);
-  border-color: var(--border-light);
-  color: #81C784;
+body.dark header .notification, html.dark header .notification {
+  background: #1B261D !important;
+  border-color: #253828 !important;
+  color: #81C784 !important;
 }
 
-body.dark .welcome-card {
-  background: linear-gradient(135deg, #1B4D20 0%, #256B2C 100%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+body.dark .welcome-card, html.dark .welcome-card {
+  background: linear-gradient(135deg, #1B4D20 0%, #256B2C 100%) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
-body.dark .input-box {
-  background: var(--bg-input);
+body.dark .input-box, html.dark .input-box {
+  background: #151F17 !important;
+  border-color: #253828 !important;
 }
 
-body.dark .input-field {
-  background: var(--bg-input) !important;
-  border-color: var(--border-light) !important;
-  color: var(--text-main) !important;
+body.dark .input-field, html.dark .input-field {
+  background: #151F17 !important;
+  border-color: #253828 !important;
+  color: #F0F4F1 !important;
 }
 
-body.dark .section-title {
-  color: var(--text-main);
+body.dark .section-title, html.dark .section-title {
+  color: #F0F4F1 !important;
+}
+
+body.dark .bottom-nav, html.dark .bottom-nav {
+  background: #1B261D !important;
+  border-top-color: #253828 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark .nav-item, html.dark .nav-item {
+  color: #9EAEA1 !important;
+}
+
+body.dark .nav-item.active, html.dark .nav-item.active {
+  background: rgba(67, 160, 71, 0.25) !important;
+  color: #81C784 !important;
 }
