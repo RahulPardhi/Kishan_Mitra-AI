@@ -118,21 +118,24 @@ const KisanAPI = {
                 // offline login must never overwrite the user's uploaded photo.
                 if (isDefaultAvatar(user.avatar) && savedAvatar) user.avatar = savedAvatar;
                 if (user.avatar) saveAvatar(user.avatar, user);
+
+                // Preserve user dark mode choice if set
+                const key = KisanAPI.getThemeKey(user);
+                const savedTheme = (key && localStorage.getItem(key) !== null)
+                    ? (localStorage.getItem(key) === "true")
+                    : (localStorage.getItem("userDarkMode") !== null
+                        ? (localStorage.getItem("userDarkMode") === "true")
+                        : (user.darkMode === true));
+
+                user.darkMode = savedTheme;
                 safeSetItem("user", JSON.stringify(user));
                 if (user.name) safeSetItem("userName", user.name);
                 if (user.email) safeSetItem("profileEmail", user.email);
                 if (user.mobile !== undefined) safeSetItem("profileMobile", user.mobile);
                 if (user.location !== undefined) safeSetItem("profileLocation", user.location);
                 if (user.language) safeSetItem("profileLanguage", user.language);
-                
-                // Initialize user-specific theme key if not set (new users default to light mode)
-                const key = KisanAPI.getThemeKey(user);
-                if (key && localStorage.getItem(key) !== null) {
-                    user.darkMode = localStorage.getItem(key) === "true";
-                } else {
-                    const initialDark = user.darkMode === true;
-                    KisanAPI.setTheme(initialDark, user);
-                }
+
+                KisanAPI.setTheme(savedTheme, user);
             } catch (err) {
                 console.warn("setUser encountered non-fatal storage warning:", err.message);
             }
@@ -164,11 +167,11 @@ const KisanAPI = {
         if (key && localStorage.getItem(key) !== null) {
             return localStorage.getItem(key) === "true";
         }
-        if (typeof u?.darkMode === "boolean") {
-            return u.darkMode;
-        }
         if (localStorage.getItem("userDarkMode") !== null) {
             return localStorage.getItem("userDarkMode") === "true";
+        }
+        if (typeof u?.darkMode === "boolean") {
+            return u.darkMode;
         }
         return false;
     },
@@ -393,3 +396,14 @@ window.KisanAPI = KisanAPI;
     window.KisanNotify = { notify, confirm };
     window.alert = (message) => notify(message);
 })();
+
+// Auto-apply theme immediately when config.js loads
+if (typeof document !== "undefined") {
+    if (document.body) {
+        if (window.KisanAPI) window.KisanAPI.applyTheme();
+    } else {
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.KisanAPI) window.KisanAPI.applyTheme();
+        });
+    }
+}
