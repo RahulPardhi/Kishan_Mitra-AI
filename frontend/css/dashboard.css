@@ -239,6 +239,21 @@ body.dark .feature-card {
   border-color: var(--border-light) !important;
 }
 
+body.dark .feature-card h3 {
+  color: var(--text-main) !important;
+}
+
+body.dark .feature-card p {
+  color: var(--text-muted) !important;
+}
+
+body.dark #diseaseCard .icon { background: rgba(46, 125, 50, 0.2); color: #81C784; }
+body.dark #chatCard .icon { background: rgba(25, 118, 210, 0.2); color: #64B5F6; }
+body.dark #soilCard .icon { background: rgba(245, 127, 23, 0.2); color: #FFD54F; }
+body.dark #weatherCard .icon { background: rgba(123, 31, 162, 0.2); color: #BA68C8; }
+body.dark #voiceCard .icon { background: rgba(198, 40, 40, 0.2); color: #E57373; }
+body.dark #languageCard .icon { background: rgba(0, 105, 92, 0.2); color: #4DB6AC; }
+
 /* Farming Tip Section */
 .tip-card {
   background: rgba(255, 152, 0, 0.08);
@@ -276,3 +291,42 @@ body.dark .feature-card {
   color: var(--text-muted);
   line-height: 1.4;
 }
+
+body.dark .tip-card {
+  background: rgba(255, 152, 0, 0.08);
+  border-color: rgba(255, 152, 0, 0.3);
+}
+
+body.dark .tip-icon {
+  background: rgba(255, 152, 0, 0.2);
+  color: #FFB74D;
+}
+
+body.dark header h2 {
+  color: #81C784;
+}
+
+body.dark header .notification {
+  background: var(--bg-surface);
+  border-color: var(--border-light);
+  color: #81C784;
+}
+
+body.dark .welcome-card {
+  background: linear-gradient(135deg, #1B4D20 0%, #256B2C 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .input-box {
+  background: var(--bg-input);
+}
+
+body.dark .input-field {
+  background: var(--bg-input) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-main) !important;
+}
+
+body.dark .section-title {
+  color: var(--text-main);
+}

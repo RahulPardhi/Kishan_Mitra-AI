@@ -160,15 +160,15 @@ const KisanAPI = {
             return false;
         }
         const u = user || KisanAPI.getUser();
-        if (!u || !u.email) {
-            return false;
-        }
         const key = KisanAPI.getThemeKey(u);
         if (key && localStorage.getItem(key) !== null) {
             return localStorage.getItem(key) === "true";
         }
         if (typeof u?.darkMode === "boolean") {
             return u.darkMode;
+        }
+        if (localStorage.getItem("userDarkMode") !== null) {
+            return localStorage.getItem("userDarkMode") === "true";
         }
         return false;
     },
@@ -179,6 +179,7 @@ const KisanAPI = {
         if (u) u.darkMode = isDarkBool;
         const key = KisanAPI.getThemeKey(u);
         if (key) safeSetItem(key, isDarkBool ? "true" : "false");
+        safeSetItem("userDarkMode", isDarkBool ? "true" : "false");
         localStorage.removeItem("darkMode"); // Remove legacy un-scoped theme key
         try {
             const cachedUser = JSON.parse(localStorage.getItem("user") || "null");
@@ -216,6 +217,7 @@ const KisanAPI = {
         localStorage.removeItem("profileImage");
         localStorage.removeItem("profileImageOwner");
         localStorage.removeItem("darkMode");
+        localStorage.removeItem("userDarkMode");
     },
 
     getAvatar: (user) => (user && !isDefaultAvatar(user.avatar) ? user.avatar : getSavedAvatar(user)),
