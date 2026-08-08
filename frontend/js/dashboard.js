@@ -3,6 +3,42 @@ if (window.KisanAPI) {
     window.KisanAPI.applyTheme();
 }
 
+// Quick Theme Toggle in Header
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+const themeToggleIcon = document.getElementById("themeToggleIcon");
+
+function updateThemeToggleIcon() {
+    if (!themeToggleIcon || !window.KisanAPI) return;
+    const isDark = window.KisanAPI.getTheme();
+    if (isDark) {
+        themeToggleIcon.classList.remove("fa-moon");
+        themeToggleIcon.classList.add("fa-sun");
+    } else {
+        themeToggleIcon.classList.remove("fa-sun");
+        themeToggleIcon.classList.add("fa-moon");
+    }
+}
+
+if (themeToggleBtn) {
+    updateThemeToggleIcon();
+    themeToggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (window.KisanAPI) {
+            const currentDark = window.KisanAPI.getTheme();
+            const nextDark = !currentDark;
+            window.KisanAPI.setTheme(nextDark);
+            window.KisanAPI.applyTheme();
+            updateThemeToggleIcon();
+            if (window.KisanAPI.getToken()) {
+                window.KisanAPI.request("/auth/profile", {
+                    method: "PUT",
+                    body: JSON.stringify({ darkMode: nextDark }),
+                }).catch((err) => console.warn("Theme toggle sync warning:", err));
+            }
+        }
+    });
+}
+
 console.log("Dashboard Loaded Successfully 🚀");
 
 // ================================
