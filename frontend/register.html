@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/login.css">
 </head>
 
-<body>
+<body class="auth-page">
 
     <div class="container app-container">
 
@@ -80,6 +80,7 @@
 
     <script src="js/config.js"></script>
     <script>
+        document.body.classList.remove("dark");
         if (window.KisanAPI) window.KisanAPI.applyTheme();
 
         const nameInput = document.getElementById("regName");

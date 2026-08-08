@@ -1,4 +1,5 @@
-// Apply Theme on Page Load (Unauthenticated defaults to Light Mode)
+// Auth pages strictly remain in Light Mode
+document.body.classList.remove("dark");
 if (window.KisanAPI) {
     window.KisanAPI.applyTheme();
 }

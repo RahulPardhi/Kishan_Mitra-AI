@@ -124,7 +124,15 @@ const KisanAPI = {
                 if (user.mobile !== undefined) safeSetItem("profileMobile", user.mobile);
                 if (user.location !== undefined) safeSetItem("profileLocation", user.location);
                 if (user.language) safeSetItem("profileLanguage", user.language);
-                if (typeof user.darkMode === "boolean") KisanAPI.setTheme(user.darkMode, user);
+                
+                // Initialize user-specific theme key if not set (new users default to light mode)
+                const key = KisanAPI.getThemeKey(user);
+                if (key && localStorage.getItem(key) !== null) {
+                    user.darkMode = localStorage.getItem(key) === "true";
+                } else {
+                    const initialDark = user.darkMode === true;
+                    KisanAPI.setTheme(initialDark, user);
+                }
             } catch (err) {
                 console.warn("setUser encountered non-fatal storage warning:", err.message);
             }
@@ -137,35 +145,55 @@ const KisanAPI = {
         return email ? `darkMode:${email}` : "";
     },
 
+    isAuthPage: () => {
+        if (typeof window === "undefined" || !window.location) return false;
+        const path = (window.location.pathname || "").toLowerCase();
+        const isAuthUrl = path.endsWith("login.html") || path.endsWith("register.html") ||
+                          path.endsWith("/login") || path.endsWith("/register") ||
+                          path.includes("login.html") || path.includes("register.html");
+        const isAuthClass = document.body && document.body.classList && document.body.classList.contains("auth-page");
+        return isAuthUrl || isAuthClass;
+    },
+
     getTheme: (user) => {
+        if (KisanAPI.isAuthPage()) {
+            return false;
+        }
         const u = user || KisanAPI.getUser();
+        if (!u || !u.email) {
+            return false;
+        }
         const key = KisanAPI.getThemeKey(u);
         if (key && localStorage.getItem(key) !== null) {
             return localStorage.getItem(key) === "true";
         }
-        if (typeof u?.darkMode === "boolean") return u.darkMode;
-        if (localStorage.getItem("darkMode") !== null) {
-            return localStorage.getItem("darkMode") === "true";
+        if (typeof u?.darkMode === "boolean") {
+            return u.darkMode;
         }
         return false;
     },
 
     setTheme: (isDark, user) => {
+        const isDarkBool = isDark === true;
         const u = user || KisanAPI.getUser();
-        if (u) u.darkMode = isDark;
+        if (u) u.darkMode = isDarkBool;
         const key = KisanAPI.getThemeKey(u);
-        if (key) safeSetItem(key, isDark ? "true" : "false");
-        safeSetItem("darkMode", isDark ? "true" : "false");
+        if (key) safeSetItem(key, isDarkBool ? "true" : "false");
+        localStorage.removeItem("darkMode"); // Remove legacy un-scoped theme key
         try {
             const cachedUser = JSON.parse(localStorage.getItem("user") || "null");
             if (cachedUser) {
-                cachedUser.darkMode = isDark;
+                cachedUser.darkMode = isDarkBool;
                 safeSetItem("user", JSON.stringify(cachedUser));
             }
         } catch (e) {}
     },
 
     applyTheme: (user) => {
+        if (KisanAPI.isAuthPage()) {
+            document.body.classList.remove("dark");
+            return false;
+        }
         const isDark = KisanAPI.getTheme(user);
         if (isDark) {
             document.body.classList.add("dark");
@@ -187,6 +215,7 @@ const KisanAPI = {
         localStorage.removeItem("cropPreviewImage");
         localStorage.removeItem("profileImage");
         localStorage.removeItem("profileImageOwner");
+        localStorage.removeItem("darkMode");
     },
 
     getAvatar: (user) => (user && !isDefaultAvatar(user.avatar) ? user.avatar : getSavedAvatar(user)),

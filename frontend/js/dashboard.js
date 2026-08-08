@@ -1,8 +1,6 @@
 // Apply Dark Mode on Page Load
 if (window.KisanAPI) {
     window.KisanAPI.applyTheme();
-} else if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
 }
 
 console.log("Dashboard Loaded Successfully 🚀");
