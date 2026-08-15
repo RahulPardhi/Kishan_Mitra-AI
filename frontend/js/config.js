@@ -317,34 +317,255 @@ const KisanAPI = {
 
 window.KisanAPI = KisanAPI;
 
-// Modern, accessible notifications shared by every screen that loads config.js.
-// Existing alert(...) calls are redirected here so feature scripts do not need
-// to duplicate UI code.
+// Modern, accessible notifications & styled alerts shared by every screen.
 (() => {
-    const style = document.createElement("style");
-    style.textContent = `
-        .kisan-toast-region { position: fixed; z-index: 9999; top: max(18px, env(safe-area-inset-top)); right: 18px; width: min(390px, calc(100vw - 36px)); display: grid; gap: 10px; pointer-events: none; }
-        .kisan-toast { --notice-color: #2e7d32; display: grid; grid-template-columns: 38px 1fr auto; align-items: start; gap: 11px; padding: 14px 12px 14px 14px; border: 1px solid color-mix(in srgb, var(--notice-color) 20%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--bg-surface, #fff) 96%, var(--notice-color)); color: var(--text-main, #202722); box-shadow: 0 16px 38px rgba(20, 45, 27, .18); backdrop-filter: blur(12px); pointer-events: auto; animation: kisan-toast-in .35s cubic-bezier(.22,1,.36,1) both; overflow: hidden; }
-        .kisan-toast::after { content: ""; position: absolute; inset: auto 0 0; height: 3px; background: var(--notice-color); animation: kisan-toast-progress 4.5s linear forwards; }
-        .kisan-toast.is-error { --notice-color: #dc2626; } .kisan-toast.is-info { --notice-color: #2563eb; } .kisan-toast.is-warning { --notice-color: #d97706; }
-        .kisan-toast__icon { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--notice-color) 14%, transparent); color: var(--notice-color); font-weight: 800; font-size: 18px; }
-        .kisan-toast__title { display: block; margin: 1px 0 2px; color: var(--notice-color); font-size: .82rem; font-weight: 700; } .kisan-toast__message { margin: 0; font-size: .88rem; line-height: 1.45; }
-        .kisan-toast__close { border: 0; background: transparent; color: var(--text-muted, #657267); font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 4px; }
-        .kisan-toast.is-leaving { animation: kisan-toast-out .22s ease forwards; }
-        .kisan-dialog-backdrop { position: fixed; z-index: 10000; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(12, 25, 15, .48); backdrop-filter: blur(5px); animation: kisan-fade-in .2s ease both; }
-        .kisan-dialog { width: min(390px, 100%); padding: 24px; border-radius: 22px; background: var(--bg-surface, #fff); color: var(--text-main, #202722); box-shadow: 0 24px 60px rgba(0,0,0,.25); animation: kisan-dialog-in .28s cubic-bezier(.22,1,.36,1) both; }
-        .kisan-dialog__icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px; background: #fff4e5; color: #d97706; font-size: 22px; } .kisan-dialog h3 { margin: 15px 0 7px; font-size: 1.12rem; } .kisan-dialog p { margin: 0; color: var(--text-muted, #657267); font-size: .92rem; line-height: 1.5; }
-        .kisan-dialog__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; } .kisan-dialog__actions button { border: 0; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 650; cursor: pointer; } .kisan-dialog__cancel { background: var(--border-light, #e8f5e9); color: var(--text-main, #202722); } .kisan-dialog__confirm { background: var(--primary, #2e7d32); color: #fff; box-shadow: 0 6px 14px rgba(46,125,50,.25); }
-        @keyframes kisan-toast-in { from { opacity: 0; transform: translateX(24px) scale(.96); } to { opacity: 1; transform: none; } } @keyframes kisan-toast-out { to { opacity: 0; transform: translateX(18px) scale(.97); } } @keyframes kisan-toast-progress { to { transform: translateX(-100%); } } @keyframes kisan-fade-in { from { opacity: 0; } to { opacity: 1; } } @keyframes kisan-dialog-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
-        @media (max-width: 480px) { .kisan-toast-region { top: 12px; right: 12px; width: calc(100vw - 24px); } .kisan-dialog { padding: 21px; } }
-        @media (prefers-reduced-motion: reduce) { .kisan-toast, .kisan-dialog-backdrop, .kisan-dialog { animation: none; } .kisan-toast::after { animation: none; } }
-    `;
-    document.head.appendChild(style);
+    const styleId = "kisan-toast-styles";
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement("style");
+        style.id = styleId;
+        style.textContent = `
+            .kisan-toast-region {
+                position: fixed;
+                z-index: 100000;
+                top: max(16px, env(safe-area-inset-top));
+                right: 16px;
+                width: min(400px, calc(100vw - 32px));
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                pointer-events: none;
+            }
+            .kisan-toast {
+                --toast-color: #2e7d32;
+                --toast-bg: rgba(255, 255, 255, 0.94);
+                --toast-text: #1b261d;
+                --toast-border: rgba(46, 125, 50, 0.25);
+                position: relative;
+                display: grid;
+                grid-template-columns: 42px 1fr auto;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+                border: 1.5px solid var(--toast-border);
+                border-radius: 18px;
+                background: var(--toast-bg);
+                color: var(--toast-text);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                pointer-events: auto;
+                animation: kisan-toast-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+                overflow: hidden;
+            }
+            body.dark .kisan-toast {
+                --toast-bg: rgba(23, 34, 25, 0.94);
+                --toast-text: #f0f4f1;
+                --toast-border: rgba(255, 255, 255, 0.15);
+                box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+            }
+            .kisan-toast::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: var(--toast-color);
+                animation: kisan-toast-progress 4.5s linear forwards;
+            }
+            .kisan-toast.is-error { --toast-color: #e53935; --toast-border: rgba(229, 57, 53, 0.3); }
+            .kisan-toast.is-info { --toast-color: #1e88e5; --toast-border: rgba(30, 136, 229, 0.3); }
+            .kisan-toast.is-warning { --toast-color: #ff8f00; --toast-border: rgba(255, 143, 0, 0.3); }
+            .kisan-toast.is-success { --toast-color: #2e7d32; --toast-border: rgba(46, 125, 50, 0.3); }
 
-    const region = document.createElement("div");
-    region.className = "kisan-toast-region";
-    region.setAttribute("aria-live", "polite");
-    document.body.appendChild(region);
+            .kisan-toast__icon {
+                width: 42px;
+                height: 42px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(46, 125, 50, 0.12);
+                color: var(--toast-color);
+                font-size: 20px;
+                font-weight: 700;
+                flex-shrink: 0;
+            }
+            .kisan-toast.is-error .kisan-toast__icon { background: rgba(229, 57, 53, 0.12); }
+            .kisan-toast.is-info .kisan-toast__icon { background: rgba(30, 136, 229, 0.12); }
+            .kisan-toast.is-warning .kisan-toast__icon { background: rgba(255, 143, 0, 0.12); }
+
+            .kisan-toast__content {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+            .kisan-toast__title {
+                font-size: 0.88rem;
+                font-weight: 700;
+                color: var(--toast-color);
+                line-height: 1.2;
+            }
+            .kisan-toast__message {
+                margin: 0;
+                font-size: 0.88rem;
+                line-height: 1.4;
+                color: var(--toast-text);
+                font-weight: 400;
+            }
+            .kisan-toast__close {
+                border: none;
+                background: rgba(0, 0, 0, 0.05);
+                color: var(--toast-text);
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                font-size: 16px;
+                line-height: 1;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+                opacity: 0.7;
+            }
+            body.dark .kisan-toast__close {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .kisan-toast__close:hover {
+                opacity: 1;
+                background: rgba(0, 0, 0, 0.12);
+            }
+            .kisan-toast.is-leaving {
+                animation: kisan-toast-out 0.25s ease forwards;
+            }
+
+            /* Custom Dialog Overlay */
+            .kisan-dialog-backdrop {
+                position: fixed;
+                z-index: 100001;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                background: rgba(10, 25, 14, 0.55);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                animation: kisan-fade-in 0.2s ease both;
+            }
+            .kisan-dialog {
+                width: min(400px, 100%);
+                padding: 28px 24px 24px;
+                border-radius: 24px;
+                background: #ffffff;
+                color: #1b261d;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+                text-align: center;
+                animation: kisan-dialog-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            }
+            body.dark .kisan-dialog {
+                background: #1b261d;
+                color: #f0f4f1;
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            .kisan-dialog__icon {
+                width: 56px;
+                height: 56px;
+                margin: 0 auto 16px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(46, 125, 50, 0.12);
+                color: #2e7d32;
+                font-size: 26px;
+            }
+            .kisan-dialog h3 {
+                margin: 0 0 8px;
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
+            .kisan-dialog p {
+                margin: 0 0 22px;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                opacity: 0.85;
+            }
+            .kisan-dialog__actions {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+            }
+            .kisan-dialog__btn {
+                flex: 1;
+                border: none;
+                border-radius: 14px;
+                padding: 12px 20px;
+                font-family: inherit;
+                font-size: 0.95rem;
+                font-weight: 650;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .kisan-dialog__cancel {
+                background: rgba(0, 0, 0, 0.07);
+                color: inherit;
+            }
+            body.dark .kisan-dialog__cancel {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .kisan-dialog__confirm {
+                background: linear-gradient(135deg, #2e7d32, #1b5e20);
+                color: #ffffff;
+                box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+            }
+            .kisan-dialog__confirm:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 22px rgba(46, 125, 50, 0.45);
+            }
+
+            @keyframes kisan-toast-in {
+                from { opacity: 0; transform: translateY(-16px) scale(0.94); }
+                to { opacity: 1; transform: none; }
+            }
+            @keyframes kisan-toast-out {
+                to { opacity: 0; transform: translateY(-12px) scale(0.96); }
+            }
+            @keyframes kisan-toast-progress {
+                to { transform: scaleX(0); }
+            }
+            @keyframes kisan-fade-in {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes kisan-dialog-in {
+                from { opacity: 0; transform: scale(0.9); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @media (max-width: 480px) {
+                .kisan-toast-region {
+                    top: 12px;
+                    left: 12px;
+                    right: 12px;
+                    width: calc(100vw - 24px);
+                }
+            }
+        `;
+        (document.head || document.documentElement).appendChild(style);
+    }
+
+    const getRegion = () => {
+        let region = document.querySelector(".kisan-toast-region");
+        if (!region) {
+            region = document.createElement("div");
+            region.className = "kisan-toast-region";
+            region.setAttribute("aria-live", "polite");
+            (document.body || document.documentElement).appendChild(region);
+        }
+        return region;
+    };
 
     const sanitizeMessage = (msg) => {
         const text = String(msg || "");
@@ -358,42 +579,113 @@ window.KisanAPI = KisanAPI;
         if (requestedType) return requestedType;
         if (/fail|error|invalid|unable|please select|please enter|please fill/i.test(message)) return "error";
         if (/success|updated|welcome|saved|login successful/i.test(message)) return "success";
+        if (/notifications|weather|alert|warning/i.test(message)) return "info";
         return "info";
     };
-    const icons = { success: "✓", error: "!", warning: "!", info: "i" };
-    const titles = { success: "Success", error: "Action needed", warning: "Please note", info: "Kisan Mitra" };
+
+    const icons = { success: "✓", error: "✕", warning: "⚠", info: "🔔" };
+    const titles = { success: "Success", error: "Notification", warning: "Alert", info: "Kisan Mitra AI" };
 
     const notify = (message, options = {}) => {
         const cleanMsg = sanitizeMessage(message);
         const type = getType(cleanMsg, options.type);
+        const region = getRegion();
+
         const toast = document.createElement("article");
         toast.className = `kisan-toast is-${type}`;
         toast.setAttribute("role", type === "error" ? "alert" : "status");
-        const icon = document.createElement("span"); icon.className = "kisan-toast__icon"; icon.textContent = icons[type];
+
+        const icon = document.createElement("span");
+        icon.className = "kisan-toast__icon";
+        icon.textContent = options.icon || icons[type];
+
         const copy = document.createElement("div");
-        const title = document.createElement("strong"); title.className = "kisan-toast__title"; title.textContent = options.title || titles[type];
-        const text = document.createElement("p"); text.className = "kisan-toast__message"; text.textContent = cleanMsg;
-        const close = document.createElement("button"); close.className = "kisan-toast__close"; close.type = "button"; close.setAttribute("aria-label", "Dismiss notification"); close.textContent = "×";
-        copy.append(title, text); toast.append(icon, copy, close); region.appendChild(toast);
-        const dismiss = () => { if (!toast.isConnected) return; toast.classList.add("is-leaving"); setTimeout(() => toast.remove(), 230); };
+        copy.className = "kisan-toast__content";
+
+        const title = document.createElement("strong");
+        title.className = "kisan-toast__title";
+        title.textContent = options.title || titles[type];
+
+        const text = document.createElement("p");
+        text.className = "kisan-toast__message";
+        text.textContent = cleanMsg;
+
+        const close = document.createElement("button");
+        close.className = "kisan-toast__close";
+        close.type = "button";
+        close.setAttribute("aria-label", "Dismiss notification");
+        close.textContent = "✕";
+
+        copy.append(title, text);
+        toast.append(icon, copy, close);
+        region.appendChild(toast);
+
+        const dismiss = () => {
+            if (!toast.isConnected) return;
+            toast.classList.add("is-leaving");
+            setTimeout(() => toast.remove(), 250);
+        };
+
         close.addEventListener("click", dismiss);
         setTimeout(dismiss, options.duration ?? 4500);
         return toast;
     };
 
     const confirm = (message, options = {}) => new Promise((resolve) => {
-        const backdrop = document.createElement("div"); backdrop.className = "kisan-dialog-backdrop";
-        const dialog = document.createElement("section"); dialog.className = "kisan-dialog"; dialog.setAttribute("role", "dialog"); dialog.setAttribute("aria-modal", "true");
-        const icon = document.createElement("div"); icon.className = "kisan-dialog__icon"; icon.textContent = options.icon || "↪";
-        const heading = document.createElement("h3"); heading.textContent = options.title || "Please confirm";
-        const text = document.createElement("p"); text.textContent = message;
-        const actions = document.createElement("div"); actions.className = "kisan-dialog__actions";
-        const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "kisan-dialog__cancel"; cancel.textContent = options.cancelText || "Cancel";
-        const accept = document.createElement("button"); accept.type = "button"; accept.className = "kisan-dialog__confirm"; accept.textContent = options.confirmText || "Confirm";
-        const close = (value) => { backdrop.remove(); document.removeEventListener("keydown", onKey); resolve(value); };
+        const backdrop = document.createElement("div");
+        backdrop.className = "kisan-dialog-backdrop";
+
+        const dialog = document.createElement("section");
+        dialog.className = "kisan-dialog";
+        dialog.setAttribute("role", "dialog");
+        dialog.setAttribute("aria-modal", "true");
+
+        const icon = document.createElement("div");
+        icon.className = "kisan-dialog__icon";
+        icon.textContent = options.icon || "🔔";
+
+        const heading = document.createElement("h3");
+        heading.textContent = options.title || "Kisan Mitra AI";
+
+        const text = document.createElement("p");
+        text.textContent = sanitizeMessage(message);
+
+        const actions = document.createElement("div");
+        actions.className = "kisan-dialog__actions";
+
+        const accept = document.createElement("button");
+        accept.type = "button";
+        accept.className = "kisan-dialog__btn kisan-dialog__confirm";
+        accept.textContent = options.confirmText || "OK";
+
+        const close = (value) => {
+            backdrop.remove();
+            document.removeEventListener("keydown", onKey);
+            resolve(value);
+        };
+
         const onKey = (event) => { if (event.key === "Escape") close(false); };
-        cancel.addEventListener("click", () => close(false)); accept.addEventListener("click", () => close(true)); backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(false); });
-        actions.append(cancel, accept); dialog.append(icon, heading, text, actions); backdrop.appendChild(dialog); document.body.appendChild(backdrop); document.addEventListener("keydown", onKey); accept.focus();
+
+        if (options.showCancel) {
+            const cancel = document.createElement("button");
+            cancel.type = "button";
+            cancel.className = "kisan-dialog__btn kisan-dialog__cancel";
+            cancel.textContent = options.cancelText || "Cancel";
+            cancel.addEventListener("click", () => close(false));
+            actions.append(cancel);
+        }
+
+        accept.addEventListener("click", () => close(true));
+        backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(false); });
+
+        actions.append(accept);
+        dialog.append(icon, heading, text, actions);
+        backdrop.appendChild(dialog);
+
+        const parent = document.body || document.documentElement;
+        parent.appendChild(backdrop);
+        document.addEventListener("keydown", onKey);
+        accept.focus();
     });
 
     window.KisanNotify = { notify, confirm };
