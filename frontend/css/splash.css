@@ -4,7 +4,9 @@
 
 @import url('style.css');
 
-html {
+html.splash-page,
+body.splash-page,
+body.splash-body {
   width: 100% !important;
   height: 100% !important;
   min-height: 100vh !important;
@@ -12,32 +14,24 @@ html {
   padding: 0 !important;
   background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%) !important;
   background-attachment: fixed !important;
-  overflow-x: hidden !important;
-}
-
-body {
-  width: 100% !important;
-  min-height: 100vh !important;
-  height: 100% !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   overflow-x: hidden !important;
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%) !important;
-  background-attachment: fixed !important;
-  position: relative !important;
-  padding: 0 !important;
-  margin: 0 !important;
 }
 
-body.dark {
+html.splash-page.dark,
+body.splash-page.dark,
+body.splash-body.dark {
   background: linear-gradient(135deg, #09120B 0%, #101A12 50%, #19271B 100%) !important;
   background-attachment: fixed !important;
 }
 
 /* Dynamic background glowing circles */
 .background-circle {
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
   pointer-events: none;
@@ -74,10 +68,16 @@ body.dark {
 }
 
 /* Splash Container */
-.splash-container, main.splash-container, main.container, .app-container {
+.splash-container,
+main.splash-container {
   width: 100% !important;
   max-width: 480px !important;
-  min-height: auto !important;
+  min-height: 100vh !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
   text-align: center !important;
   position: relative !important;
   z-index: 10 !important;
@@ -85,6 +85,7 @@ body.dark {
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
+  border-radius: 0 !important;
   margin: 0 auto !important;
 }
 

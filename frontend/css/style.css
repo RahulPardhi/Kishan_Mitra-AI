@@ -98,16 +98,16 @@ body {
 }
 
 @media (min-width: 768px) {
-  body {
+  body:not(.splash-body) {
     padding: 24px 0;
     background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
   }
 
-  body.dark {
+  body.dark:not(.splash-body) {
     background: linear-gradient(135deg, #09120B 0%, #101A12 50%, #19271B 100%);
   }
 
-  .app-container, .container {
+  .app-container, .container:not(.splash-container) {
     border-radius: 28px;
     min-height: calc(100vh - 48px);
     overflow: hidden;
