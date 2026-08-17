@@ -149,14 +149,37 @@ const KisanAPI = {
         return email ? `darkMode:${email}` : "";
     },
 
+    isAuthenticated: () => {
+        try {
+            const token = KisanAPI.getToken();
+            const user = KisanAPI.getUser();
+            return Boolean(token || user);
+        } catch (e) {
+            return false;
+        }
+    },
+
     isAuthPage: () => {
         if (typeof window === "undefined" || !window.location) return false;
         const path = (window.location.pathname || "").toLowerCase();
         const file = path.split("/").pop() || "";
-        const isAuthUrl = file === "login.html" || file === "register.html" || file === "login" || file === "register";
-        const isAuthClass = (document.body && document.body.classList && document.body.classList.contains("auth-page")) ||
-                            (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains("auth-page"));
+        const isAuthUrl = file === "login.html" || file === "register.html" || file === "index.html" ||
+                          file === "login" || file === "register" || file === "index" || file === "";
+        const isAuthClass = (document.body && document.body.classList && (document.body.classList.contains("auth-page") || document.body.classList.contains("splash-page"))) ||
+                            (document.documentElement && document.documentElement.classList && (document.documentElement.classList.contains("auth-page") || document.documentElement.classList.contains("splash-page")));
         return isAuthUrl || isAuthClass;
+    },
+
+    checkAuthGuard: () => {
+        if (typeof window === "undefined" || !window.location) return;
+        const authenticated = KisanAPI.isAuthenticated();
+        const authPage = KisanAPI.isAuthPage();
+
+        if (authenticated && authPage) {
+            window.location.replace("dashboard.html");
+        } else if (!authenticated && !authPage) {
+            window.location.replace("login.html");
+        }
     },
 
     getTheme: (user) => {
@@ -693,13 +716,26 @@ window.KisanAPI = KisanAPI;
     window.alert = (message) => notify(message);
 })();
 
-// Auto-apply theme immediately when config.js loads
-if (typeof document !== "undefined") {
-    if (document.body) {
-        if (window.KisanAPI) window.KisanAPI.applyTheme();
-    } else {
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.KisanAPI) window.KisanAPI.applyTheme();
-        });
+// Auto-apply theme and enforce central auth guard immediately when config.js loads
+if (typeof window !== "undefined") {
+    if (window.KisanAPI) {
+        window.KisanAPI.checkAuthGuard();
     }
+    if (typeof document !== "undefined") {
+        if (document.body) {
+            if (window.KisanAPI) window.KisanAPI.applyTheme();
+        } else {
+            document.addEventListener("DOMContentLoaded", () => {
+                if (window.KisanAPI) {
+                    window.KisanAPI.applyTheme();
+                    window.KisanAPI.checkAuthGuard();
+                }
+            });
+        }
+    }
+    window.addEventListener("pageshow", () => {
+        if (window.KisanAPI) {
+            window.KisanAPI.checkAuthGuard();
+        }
+    });
 }

@@ -62,7 +62,7 @@ if (logoutBtn) {
             if (window.KisanAPI) window.KisanAPI.clearAuth();
             localStorage.removeItem("profileEmail");
             localStorage.removeItem("userName");
-            window.location.href = "login.html";
+            window.location.replace("login.html");
         }
     });
 }

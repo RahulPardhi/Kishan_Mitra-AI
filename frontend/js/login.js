@@ -147,7 +147,7 @@ if (loginBtn) {
                 window.KisanAPI.setToken(res.token);
                 window.KisanAPI.setUser(res.user);
                 alert("Login Successful! 🚀");
-                window.location.href = "dashboard.html";
+                window.location.replace("dashboard.html");
                 return;
             }
 
