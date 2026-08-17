@@ -163,15 +163,30 @@ const KisanAPI = {
         if (typeof window === "undefined" || !window.location) return false;
         const path = (window.location.pathname || "").toLowerCase();
         const file = path.split("/").pop() || "";
-        const isAuthUrl = file === "login.html" || file === "register.html" || file === "index.html" ||
-                          file === "login" || file === "register" || file === "index" || file === "";
-        const isAuthClass = (document.body && document.body.classList && (document.body.classList.contains("auth-page") || document.body.classList.contains("splash-page"))) ||
-                            (document.documentElement && document.documentElement.classList && (document.documentElement.classList.contains("auth-page") || document.documentElement.classList.contains("splash-page")));
+        const isAuthUrl = file === "login.html" || file === "register.html" || file === "login" || file === "register";
+        const isAuthClass = (document.body && document.body.classList && document.body.classList.contains("auth-page")) ||
+                            (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains("auth-page"));
         return isAuthUrl || isAuthClass;
+    },
+
+    isSplashPage: () => {
+        if (typeof window === "undefined" || !window.location) return false;
+        const path = (window.location.pathname || "").toLowerCase();
+        const file = path.split("/").pop() || "";
+        const isSplashUrl = file === "index.html" || file === "index" || file === "";
+        const isSplashClass = (document.body && document.body.classList && document.body.classList.contains("splash-page")) ||
+                              (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains("splash-page"));
+        return isSplashUrl || isSplashClass;
     },
 
     checkAuthGuard: () => {
         if (typeof window === "undefined" || !window.location) return;
+
+        // Splash screen (index.html) must always show first when opening the application.
+        if (KisanAPI.isSplashPage()) {
+            return;
+        }
+
         const authenticated = KisanAPI.isAuthenticated();
         const authPage = KisanAPI.isAuthPage();
 
