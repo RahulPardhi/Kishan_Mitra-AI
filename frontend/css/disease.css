@@ -299,3 +299,19 @@ body.dark .camera-box {
 body.dark .result-card p strong {
   color: var(--secondary);
 }
+
+@media (min-width: 1024px) {
+  .upload-options {
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .upload-box,
+  .camera-box {
+    padding: 36px 24px;
+  }
+
+  .preview img {
+    max-height: 380px;
+  }
+}

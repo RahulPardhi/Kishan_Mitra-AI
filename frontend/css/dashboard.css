@@ -162,6 +162,28 @@ body.dark .weather-card {
   margin-bottom: 24px;
 }
 
+@media (min-width: 768px) {
+  .feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .welcome-card {
+    padding: 28px 32px;
+  }
+
+  .weather-card {
+    padding: 24px 32px;
+  }
+}
+
 .feature-card {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);

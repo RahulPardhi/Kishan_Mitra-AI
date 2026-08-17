@@ -58,6 +58,15 @@ header h2 {
   gap: 14px;
   margin-bottom: 16px;
   scroll-behavior: smooth;
+  min-height: 380px;
+}
+
+@media (min-width: 1024px) {
+  .chat-box {
+    min-height: 480px;
+    padding: 24px 16px;
+    gap: 18px;
+  }
 }
 
 .chat-box::-webkit-scrollbar {
@@ -84,6 +93,14 @@ header h2 {
   animation: slideUp 0.25s ease;
 }
 
+@media (min-width: 1024px) {
+  .bot-message {
+    max-width: 65%;
+    padding: 16px 22px;
+    font-size: 15px;
+  }
+}
+
 body.dark .bot-message {
   background: var(--bg-input);
   border-color: var(--border-light);
@@ -103,6 +120,14 @@ body.dark .bot-message {
   animation: slideUp 0.25s ease;
 }
 
+@media (min-width: 1024px) {
+  .user-message {
+    max-width: 65%;
+    padding: 16px 22px;
+    font-size: 15px;
+  }
+}
+
 /* Input Floating Control Bar */
 .input-area {
   display: flex;
@@ -114,6 +139,12 @@ body.dark .bot-message {
   padding: 6px 8px 6px 16px;
   box-shadow: var(--shadow-md);
   margin-bottom: 10px;
+}
+
+@media (min-width: 1024px) {
+  .input-area {
+    padding: 8px 12px 8px 22px;
+  }
 }
 
 .input-area input {

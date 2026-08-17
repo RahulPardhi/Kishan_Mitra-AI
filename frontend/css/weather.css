@@ -162,3 +162,18 @@ body.dark .weather-card {
   color: var(--text-main);
   line-height: 1.5;
 }
+
+@media (min-width: 1024px) {
+  .details {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .detail-box {
+    padding: 24px 20px;
+  }
+
+  .weather-card {
+    padding: 40px 32px;
+  }
+}

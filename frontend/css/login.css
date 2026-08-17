@@ -259,3 +259,130 @@ body {
 .input-box.has-error i:first-child {
   color: #dc2626 !important;
 }
+
+/* Desktop Split Web Layout for Auth Pages */
+.auth-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.auth-desktop-banner {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  body.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: var(--bg-page);
+  }
+
+  .auth-page .app-container,
+  .auth-page .container,
+  .auth-wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr 1.1fr !important;
+    width: 100% !important;
+    max-width: 1040px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+    background: var(--bg-surface) !important;
+    min-height: 600px !important;
+  }
+
+  .auth-desktop-banner {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 40px;
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+    color: #FFFFFF;
+    text-align: center;
+    position: relative;
+  }
+
+  .auth-desktop-banner .logo-circle {
+    width: 90px;
+    height: 90px;
+    font-size: 44px;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 20px;
+  }
+
+  .auth-desktop-banner .brand-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+  }
+
+  .auth-desktop-banner .brand-title span {
+    color: #FF9800;
+  }
+
+  .auth-desktop-banner .brand-subtitle {
+    font-size: 15px;
+    opacity: 0.9;
+    margin-bottom: 28px;
+  }
+
+  .banner-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 32px;
+  }
+
+  .feature-chip {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    padding: 11px 18px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-align: left;
+    transition: var(--transition);
+  }
+
+  .feature-chip:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(4px);
+  }
+
+  .banner-footer {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .auth-form-container {
+    padding: 48px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--bg-surface);
+  }
+
+  .mobile-only-logo {
+    display: none !important;
+  }
+
+  .login-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+}

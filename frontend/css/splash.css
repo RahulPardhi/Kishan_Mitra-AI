@@ -89,6 +89,14 @@ main.splash-container {
   margin: 0 auto !important;
 }
 
+@media (min-width: 768px) {
+  .splash-container,
+  main.splash-container {
+    max-width: 640px !important;
+    padding: 60px 40px !important;
+  }
+}
+
 /* Emblem Logo */
 .logo-wrapper {
   margin-bottom: 24px;

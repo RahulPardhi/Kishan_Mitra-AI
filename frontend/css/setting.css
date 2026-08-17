@@ -181,3 +181,13 @@ body.dark #logoutBtn {
   border-color: #C62828;
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
 }
+
+@media (min-width: 1024px) {
+  .settings-card {
+    padding: 20px 32px;
+  }
+
+  .setting-item {
+    padding: 20px 12px;
+  }
+}

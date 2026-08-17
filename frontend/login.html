@@ -20,63 +20,87 @@
 
 <body class="auth-page">
 
-    <div class="container app-container">
+    <div class="container app-container auth-wrapper">
 
-        <!-- Top Section -->
-        <div class="top-section screen-enter">
-            <div class="logo-circle">
-                🌾
+        <!-- Left Desktop Web Showcase Banner -->
+        <div class="auth-desktop-banner">
+            <div class="banner-content">
+                <div class="logo-wrapper">
+                    <div class="logo-circle">🌾</div>
+                </div>
+                <h1 class="brand-title">Kisan Mitra <span>AI</span></h1>
+                <p class="brand-subtitle" data-key="tagline">Your Smart Farming Assistant</p>
+                
+                <div class="banner-features">
+                    <div class="feature-chip">🌿 Crop Care & Disease AI</div>
+                    <div class="feature-chip">🤖 Smart AI Chatbot</div>
+                    <div class="feature-chip">🌱 Soil Health Analyzer</div>
+                    <div class="feature-chip">⛅ Live Weather Forecast</div>
+                    <div class="feature-chip">🎙️ Voice Assistant</div>
+                </div>
+                
+                <p class="banner-footer">Trusted by 2M+ farmers across India</p>
             </div>
-            <h1 data-key="welcomeBack">Welcome Back!</h1>
-            <p data-key="signInSubtitle">Sign in to your Kisan Mitra account</p>
         </div>
 
-        <!-- Login Card -->
-        <div class="login-card screen-enter">
-
-            <!-- Email -->
-            <label data-key="emailAddress">Email Address</label>
-            <div class="input-box" id="emailBox">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="loginEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
-            </div>
-            <small class="error-text" id="loginEmailError"></small>
-
-            <!-- Password -->
-            <label data-key="password">Password</label>
-            <div class="input-box" id="passwordBox">
-                <i class="fa-solid fa-lock"></i>
-                <input id="password" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
-                <i id="togglePassword" class="fa-solid fa-eye"></i>
-            </div>
-            <small class="error-text" id="loginPasswordError"></small>
-
-            <div class="forgot">
-                <a href="#" data-key="forgotPassword">Forgot Password?</a>
+        <!-- Right Form Section -->
+        <div class="auth-form-container">
+            <!-- Top Section -->
+            <div class="top-section screen-enter">
+                <div class="logo-circle mobile-only-logo">
+                    🌾
+                </div>
+                <h1 data-key="welcomeBack">Welcome Back!</h1>
+                <p data-key="signInSubtitle">Sign in to your Kisan Mitra account</p>
             </div>
 
-            <!-- Login Button -->
-            <button class="login-btn" data-key="loginToAccount">
-                Login to Account
-            </button>
+            <!-- Login Card -->
+            <div class="login-card screen-enter">
 
-            <!-- Divider -->
-            <div class="divider">
-                <span data-key="or">OR</span>
+                <!-- Email -->
+                <label data-key="emailAddress">Email Address</label>
+                <div class="input-box" id="emailBox">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="loginEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
+                </div>
+                <small class="error-text" id="loginEmailError"></small>
+
+                <!-- Password -->
+                <label data-key="password">Password</label>
+                <div class="input-box" id="passwordBox">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="password" type="password" data-key-placeholder="enterPassword" placeholder="Enter password">
+                    <i id="togglePassword" class="fa-solid fa-eye"></i>
+                </div>
+                <small class="error-text" id="loginPasswordError"></small>
+
+                <div class="forgot">
+                    <a href="#" data-key="forgotPassword">Forgot Password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button class="login-btn" data-key="loginToAccount">
+                    Login to Account
+                </button>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span data-key="or">OR</span>
+                </div>
+
+                <!-- Google Sign In -->
+                <button class="google-btn is-disabled" disabled aria-disabled="true" title="Google Sign-In is temporarily disabled">
+                    <i class="fa-brands fa-google"></i>
+                    <span data-key="continueWithGoogle">Continue with Google</span>
+                </button>
+
+                <!-- Register Link -->
+                <p class="register">
+                    <span data-key="dontHaveAccount">Don't have an account?</span>
+                    <a href="register.html" data-key="register">Register</a>
+                </p>
+
             </div>
-
-            <!-- Google Sign In -->
-            <button class="google-btn is-disabled" disabled aria-disabled="true" title="Google Sign-In is temporarily disabled">
-                <i class="fa-brands fa-google"></i>
-                <span data-key="continueWithGoogle">Continue with Google</span>
-            </button>
-
-            <!-- Register Link -->
-            <p class="register">
-                <span data-key="dontHaveAccount">Don't have an account?</span>
-                <a href="register.html" data-key="register">Register</a>
-            </p>
-
         </div>
 
     </div>

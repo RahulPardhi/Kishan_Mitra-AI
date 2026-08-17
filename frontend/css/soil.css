@@ -149,3 +149,9 @@ header h2 {
 body.dark .result-card p strong {
   color: var(--secondary);
 }
+
+@media (min-width: 1024px) {
+  .soil-card {
+    padding: 32px 28px;
+  }
+}

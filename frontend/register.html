@@ -17,63 +17,87 @@
 
 <body class="auth-page">
 
-    <div class="container app-container">
+    <div class="container app-container auth-wrapper">
 
-        <!-- Top Section -->
-        <div class="top-section screen-enter">
-            <div class="logo-circle">
-                🌾
+        <!-- Left Desktop Web Showcase Banner -->
+        <div class="auth-desktop-banner">
+            <div class="banner-content">
+                <div class="logo-wrapper">
+                    <div class="logo-circle">🌾</div>
+                </div>
+                <h1 class="brand-title">Kisan Mitra <span>AI</span></h1>
+                <p class="brand-subtitle" data-key="tagline">Your Smart Farming Assistant</p>
+                
+                <div class="banner-features">
+                    <div class="feature-chip">🌿 Crop Care & Disease AI</div>
+                    <div class="feature-chip">🤖 Smart AI Chatbot</div>
+                    <div class="feature-chip">🌱 Soil Health Analyzer</div>
+                    <div class="feature-chip">⛅ Live Weather Forecast</div>
+                    <div class="feature-chip">🎙️ Voice Assistant</div>
+                </div>
+                
+                <p class="banner-footer">Trusted by 2M+ farmers across India</p>
             </div>
-            <h1 data-key="createAccount">Create Account</h1>
-            <p data-key="subtitle">Join Kisan Mitra AI to make farming smarter</p>
         </div>
 
-        <!-- Register Card -->
-        <div class="login-card screen-enter">
-
-            <!-- Full Name -->
-            <label data-key="fullName">Full Name</label>
-            <div class="input-box" id="regNameBox">
-                <i class="fa-solid fa-user"></i>
-                <input type="text" id="regName" data-key-placeholder="enterFullName" placeholder="Enter full name">
+        <!-- Right Form Section -->
+        <div class="auth-form-container">
+            <!-- Top Section -->
+            <div class="top-section screen-enter">
+                <div class="logo-circle mobile-only-logo">
+                    🌾
+                </div>
+                <h1 data-key="createAccount">Create Account</h1>
+                <p data-key="subtitle">Join Kisan Mitra AI to make farming smarter</p>
             </div>
-            <small class="error-text" id="regNameError"></small>
 
-            <!-- Email -->
-            <label data-key="emailAddress">Email Address</label>
-            <div class="input-box" id="regEmailBox">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="regEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
+            <!-- Register Card -->
+            <div class="login-card screen-enter">
+
+                <!-- Full Name -->
+                <label data-key="fullName">Full Name</label>
+                <div class="input-box" id="regNameBox">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="regName" data-key-placeholder="enterFullName" placeholder="Enter full name">
+                </div>
+                <small class="error-text" id="regNameError"></small>
+
+                <!-- Email -->
+                <label data-key="emailAddress">Email Address</label>
+                <div class="input-box" id="regEmailBox">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="regEmail" data-key-placeholder="enterEmail" placeholder="Enter your email">
+                </div>
+                <small class="error-text" id="regEmailError"></small>
+
+                <!-- Mobile -->
+                <label data-key="mobileNumber">Mobile Number</label>
+                <div class="input-box" id="regMobileBox">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="regMobile" data-key-placeholder="enterMobile" placeholder="Enter 10-digit mobile number" maxlength="10">
+                </div>
+                <small class="error-text" id="regMobileError"></small>
+
+                <!-- Password -->
+                <label data-key="password">Password</label>
+                <div class="input-box" id="regPasswordBox">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="regPassword" type="password" data-key-placeholder="enterPassword" placeholder="Enter password (min 6 characters)">
+                </div>
+                <small class="error-text" id="regPasswordError"></small>
+
+                <!-- Register Button -->
+                <button class="login-btn" id="regBtn" data-key="register" style="margin-top: 18px;">
+                    Register
+                </button>
+
+                <!-- Sign In Link -->
+                <p class="register" style="margin-top: 20px;">
+                    <span data-key="alreadyHaveAccount">Already have an account?</span>
+                    <a href="login.html" data-key="welcomeBack">Sign In</a>
+                </p>
+
             </div>
-            <small class="error-text" id="regEmailError"></small>
-
-            <!-- Mobile -->
-            <label data-key="mobileNumber">Mobile Number</label>
-            <div class="input-box" id="regMobileBox">
-                <i class="fa-solid fa-phone"></i>
-                <input type="tel" id="regMobile" data-key-placeholder="enterMobile" placeholder="Enter 10-digit mobile number" maxlength="10">
-            </div>
-            <small class="error-text" id="regMobileError"></small>
-
-            <!-- Password -->
-            <label data-key="password">Password</label>
-            <div class="input-box" id="regPasswordBox">
-                <i class="fa-solid fa-lock"></i>
-                <input id="regPassword" type="password" data-key-placeholder="enterPassword" placeholder="Enter password (min 6 characters)">
-            </div>
-            <small class="error-text" id="regPasswordError"></small>
-
-            <!-- Register Button -->
-            <button class="login-btn" id="regBtn" data-key="register" style="margin-top: 18px;">
-                Register
-            </button>
-
-            <!-- Sign In Link -->
-            <p class="register" style="margin-top: 20px;">
-                <span data-key="alreadyHaveAccount">Already have an account?</span>
-                <a href="login.html" data-key="welcomeBack">Sign In</a>
-            </p>
-
         </div>
 
     </div>

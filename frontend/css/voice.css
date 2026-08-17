@@ -247,3 +247,25 @@ body.dark .transcript-box .ai-msg {
   color: #FFFFFF;
   align-self: flex-end;
 }
+
+@media (min-width: 768px) {
+  .prompt-chips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .prompt-chips .chip:hover {
+    transform: translateY(-2px);
+  }
+
+  .transcript-box {
+    min-height: 180px;
+    max-height: 320px;
+    padding: 20px;
+  }
+
+  .voice-card {
+    padding: 40px 32px;
+  }
+}
