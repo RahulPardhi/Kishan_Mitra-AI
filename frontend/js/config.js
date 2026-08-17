@@ -6,7 +6,8 @@ const API_BASE_URL = (typeof window !== "undefined" && window.location && window
             ? `http://${window.location.hostname}:5000/api`
             : `${window.location.origin}/api`)
     : "http://localhost:5000/api";
-const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
+const OLD_UNSPLASH_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
+const DEFAULT_AVATAR = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%23E8F5E9"/><circle cx="50" cy="38" r="20" fill="%232E7D32"/><path d="M50 62 c-25 0 -35 15 -35 28 h70 c0 -13 -10 -28 -35 -28 z" fill="%232E7D32"/></svg>`;
 
 const safeSetItem = (key, value) => {
     try {
@@ -62,7 +63,7 @@ const saveAvatar = (avatar, user) => {
     if (user?.email) safeSetItem("profileImageOwner", user.email.trim().toLowerCase());
 };
 
-const isDefaultAvatar = (avatar) => !avatar || avatar === DEFAULT_AVATAR;
+const isDefaultAvatar = (avatar) => !avatar || avatar === DEFAULT_AVATAR || avatar === OLD_UNSPLASH_AVATAR;
 
 const KisanAPI = {
     getToken: () => localStorage.getItem("token") || "",
